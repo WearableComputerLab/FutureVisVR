@@ -4,12 +4,14 @@ using System.IO;
 using UnityEngine;
 using UnityEngine.UI;
 
-public class InfiniteFuture : MonoBehaviour
+public class HeatmapGenerator : MonoBehaviour
 {
-    public static Vector2 playingAreaSize = new Vector2(105f, 68f);
-    public static int heatmapResolution = 100;
-    public static int radius = 1; //2
-    public static float sigma = 3f; //3f
+    public Gradient heatMapGradient;
+
+    // public static Vector2 playingAreaSize = new Vector2(105f, 68f);
+    public static int heatmapResolution; //100
+    public static int radius; //1
+    public static float sigma; //3f
 
     public static Gradient colorGradient = new Gradient();
 
@@ -24,14 +26,24 @@ public class InfiniteFuture : MonoBehaviour
     // public static Color scatteredColor = Color.blue;
     public static float threshold = 0.5f;
 
-    public static float[,] heatmap = new float[heatmapResolution, heatmapResolution];
+    // public static float[,] heatmap = new float[heatmapResolution, heatmapResolution];
+    public static float[,] heatmap;
+
 
 
     // public static void GenerateHeatmap(List<Vector2> positions)
-    public static void GenerateHeatmap(List<List<Vector2>> playersPositions)
-
+    public static void GenerateHeatmap(List<List<Vector2>> playersPositions, int _radius, int _heatmapResolution, int _sigma, string heatmapType = "RealLife")
     {
-        print("GenerateHeatmap method is called!!!");
+        radius = _radius;
+        heatmapResolution = _heatmapResolution;
+        sigma = _sigma;
+        heatmap = new float[heatmapResolution, heatmapResolution];
+
+
+        Vector2 playingAreaSize = new Vector2(105f, 68f);
+        if (heatmapType.Equals("Miniature"))
+            playingAreaSize = new Vector2(0.525f, 0.34f);
+
         // Compute the cell size and create an empty heatmap
         float cellSizeX = playingAreaSize.x / heatmapResolution;
         float cellSizeY = playingAreaSize.y / heatmapResolution;
@@ -64,17 +76,15 @@ public class InfiniteFuture : MonoBehaviour
                             {
                                 // heatmap[j + jj - radius, i + ii - radius] += kernel[ii, jj];
                                 heatmap[i + ii - radius, j + jj - radius] += kernel[ii, jj];
-
                             }
                         }
                     }
                 }
             }
         }
-
     }
 
-    public static void updateHeatmap(float saturationAdjustment, float valueAdjustment, float transparentAdjustment)
+    public static void updateHeatmap(float saturationAdjustment, float valueAdjustment, float transparentAdjustment, Gradient gradient)
     {
         // Find the minimum and maximum intensity values in the heatmap
         float minIntensity = Mathf.Infinity;
@@ -104,31 +114,32 @@ public class InfiniteFuture : MonoBehaviour
                 float intensity = heatmap[i, j];
                 float normalizedIntensity = (intensity - minIntensity) / (maxIntensity - minIntensity); // Normalize intensity to [0, 1]
 
-                if (intensity > 0)
+                //if (intensity > 0)
                 {
-                    Color color = Color.Lerp(lowIntensityColor, highIntensityColor, normalizedIntensity);
+                    Color color = gradient.Evaluate(normalizedIntensity);// Color.Lerp(lowIntensityColor, highIntensityColor, normalizedIntensity);
                     // print("Color: " + color);
-                    Color.RGBToHSV(color, out float h, out float s, out float v);
-                    s += saturationAdjustment;
-                    v += valueAdjustment;
+                    //Color.RGBToHSV(color, out float h, out float s, out float v);
+                    //s += saturationAdjustment;
+                    //v += valueAdjustment;
 
-                    s = Mathf.Clamp01(s);
-                    v = Mathf.Clamp01(v);
-                    Color newColor = Color.HSVToRGB(h, s, v);
-                    newColor.a = transparentAdjustment;
+                    //s = Mathf.Clamp01(s);
+                    //v = Mathf.Clamp01(v);
+                    //Color newColor = Color.HSVToRGB(h, s, v);
+                    //newColor.a = transparentAdjustment;
+                    var newColor = color;
                     texture.SetPixel(i, j, newColor);
                 }
-                else
+                //else
                 {
-                    Color color = new Color(normalizedIntensity, normalizedIntensity, normalizedIntensity, 1f);
-                    texture.SetPixel(i, j, color);
+                    //  Color color = new Color(normalizedIntensity, normalizedIntensity, normalizedIntensity, 1f);
+                    //texture.SetPixel(i, j, color);
                 }
             }
         }
 
         texture.Apply();
 
-        GameObject heatmapObject = GameObject.Find("InfiniteFuture");
+        GameObject heatmapObject = GameObject.Find("HeatmapPlane");
 
         Material originalSoccerFieldMaterial = Resources.Load<Material>("Material/soccerFieldHeatmap");
 
@@ -136,6 +147,12 @@ public class InfiniteFuture : MonoBehaviour
         heatmapMaterial.SetTexture("_MainTex", texture);
 
         heatmapObject.GetComponent<Renderer>().material = heatmapMaterial;
-    }
 
+
+        GameObject miniatureHeatmapObject = GameObject.Find("MiniatureHeatmapPlane");
+        Material miniatureHeatmapMaterial = new Material(originalSoccerFieldMaterial);
+        miniatureHeatmapMaterial.SetTexture("_MainTex", texture);
+
+        miniatureHeatmapObject.GetComponent<Renderer>().material = heatmapMaterial;
+    }
 }

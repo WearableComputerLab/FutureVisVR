@@ -1,3 +1,4 @@
+using System.IO;
 using System.Linq;
 using System.Collections;
 using System.Collections.Generic;
@@ -12,6 +13,13 @@ using Newtonsoft.Json;
 
 public class MovableFootball : MonoBehaviour
 {
+    /*** URL or Load Game***/
+    public enum GameResourceType { WebRequest, PregeneratedGame }
+    [SerializeField]
+    public GameResourceType ResourceType;
+    private string selectedResourceType;
+
+
     ///*** Right Team ***/
     public static string RightPlayer = "mRightPlayer";
 
@@ -44,7 +52,7 @@ public class MovableFootball : MonoBehaviour
     public List<Dictionary<string, List<List<List<float>>>>> New_Team = new List<Dictionary<string, List<List<List<float>>>>>();
 
     /*** Game Pause ***/
-    public static bool gamePause = true; // Pause: false; Play: true
+    public static bool gamePause = false; // Pause: false; Play: true
 
     /*** Game Reset ***/
     public static bool gameReset = false;
@@ -66,13 +74,21 @@ public class MovableFootball : MonoBehaviour
     public static int scaleSize = 200;
 
     /*** Heatmap ***/
-
+    public Gradient heatmapGradient;
     [Range(-1, 1)]
     public float Saturation = 0;
     [Range(-1, 1)]
     public float Value = 0;
     [Range(1, 0)]
     public float Transparent = 0;
+    List<List<Vector2>> playersPositions = new List<List<Vector2>>();
+    List<List<Vector2>> mplayersPositions = new List<List<Vector2>>();
+    [Range(1, 30)]
+    public int Radius = 1;
+    [Range(10, 1000)]
+    public int Resolution = 100;
+    [Range(1, 30)]
+    public int Sigma = 3;
 
     public int fixedGameDuration = 300;
 
@@ -115,62 +131,51 @@ public class MovableFootball : MonoBehaviour
 
         System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
         sw.Start();
-        string url = generateURL(urlType.getUnityPos.ToString(), true, fixedGameDuration, EachPlayerNumber);
-        originalGame = PyFootball(EachPlayerNumber, true, url)["OriginalGame"][0];
-        stepMultiFuture = calculateFuture(stepToCalculate, FarFuture, originalStructuredGame);
+
+        switch (ResourceType)
+        {
+            case GameResourceType.WebRequest:
+                selectedResourceType = "WebRequest";
+                break;
+
+            case GameResourceType.PregeneratedGame:
+                selectedResourceType = "PregeneratedGame";
+                break;
+        }
+
+        if (selectedResourceType == "WebRequest")
+        {
+            print("Sending Web Request To Python...");
+            string url = generateURL(urlType.getUnityPos.ToString(), true, fixedGameDuration, EachPlayerNumber);
+            originalGame = PyFootball(EachPlayerNumber, true, url)["OriginalGame"][0];
+            stepMultiFuture = calculateFuture(stepToCalculate, FarFuture, originalStructuredGame);
+        }
+        else if (selectedResourceType == "PregeneratedGame")
+        {
+            print("Loading Json Files From Folders...");
+            originalGame = loadPregenerateJson("OriginalGame")["OriginalGame"][0];
+            stepMultiFuture = loadPregenerateJson("Step");
+        }
         sw.Stop();
         print("Cost time: " + sw.ElapsedMilliseconds);
 
         MultiFuture.startFutureInfo(stepMultiFuture, FarFuture);
-
-
-        List<List<Vector2>> playersPositions = new List<List<Vector2>>();
-
-        List<Vector2> player1Pos = new List<Vector2>();
-        for (int i = 0; i < futureAmount; i++)
-        {
-            foreach (List<float> position in stepMultiFuture["Step0"][i]["RightTeamLocations"][1])
-            {
-                // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
-                player1Pos.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
-            }
-        }
-        List<Vector2> player10Pos = new List<Vector2>();
-        for (int i = 0; i < futureAmount; i++)
-        {
-            foreach (List<float> position in stepMultiFuture["Step0"][i]["RightTeamLocations"][10])
-            {
-                // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
-                player10Pos.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
-            }
-        }
-        List<Vector2> player7Pos = new List<Vector2>();
-        for (int i = 0; i < futureAmount; i++)
-        {
-            foreach (List<float> position in stepMultiFuture["Step0"][i]["RightTeamLocations"][7])
-            {
-                // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
-                player7Pos.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
-            }
-        }
-        // InfiniteFuture.GenerateHeatmap(player1Pos);
-        playersPositions.Add(player1Pos);
-        playersPositions.Add(player7Pos);
-        playersPositions.Add(player10Pos);
-        InfiniteFuture.GenerateHeatmap(playersPositions);
-
         MiniatureView.startMiniatureView();
     }
 
     // Update is called once per frame
     void Update()
     {
-        updateHeatmapTime = updateHeatmapTime + 1f * Time.deltaTime;
-        if (updateHeatmapTime > 0.2)
-        {
-            updateHeatmapTime = 0;
-            InfiniteFuture.updateHeatmap(Saturation, Value, Transparent);
-        }
+        // updateHeatmapTime = updateHeatmapTime + 1f * Time.deltaTime;
+        // if (updateHeatmapTime > 0.2)
+        // {
+        //     // updateHeatmapTime = 0;
+        //     // HeatmapGenerator.GenerateHeatmap(playersPositions, Radius, Resolution, Sigma);
+        //     // HeatmapGenerator.GenerateHeatmap(mplayersPositions, Radius, Resolution, Sigma, "Miniature");
+        //     // HeatmapGenerator.updateHeatmap(Saturation, Value, Transparent, heatmapGradient);
+        // }
+        realTimeHeatmap(stepMultiFuture, StepNum);
+
 
         // ****** Big Ball ******
         // ****** Ball Locations ******
@@ -202,6 +207,61 @@ public class MovableFootball : MonoBehaviour
             {
                 MultiFuture.updateFutureInfo(StepNum, FarFuture, showFuture);
                 player(originalGame, StepNum);
+            }
+        }
+    }
+
+    public void realTimeHeatmap(Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> stepMultiFuture, int currentStep)
+    {
+        foreach (var stepFuturesPair in stepMultiFuture)
+        {
+            if (stepFuturesPair.Key.Replace("Step", String.Empty).Equals(currentStep.ToString()))
+            {
+                List<List<Vector2>> playersPositions = new List<List<Vector2>>();
+                List<List<Vector2>> mplayersPositions = new List<List<Vector2>>();
+                for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
+                {
+                    List<Vector2> rightPlayer = new List<Vector2>();
+                    List<Vector2> leftPlayer = new List<Vector2>();
+                    for (int i = 0; i < futureAmount; i++)
+                    {
+
+                        foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["RightTeamLocations"][playerId])
+                        {
+                            // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
+                            rightPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
+                        }
+                        foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["LeftTeamLocations"][playerId])
+                        {
+                            // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
+                            leftPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
+                        }
+                    }
+                    playersPositions.Add(rightPlayer);
+                    playersPositions.Add(leftPlayer);
+
+                    List<Vector2> mRightPlayer = new List<Vector2>();
+                    List<Vector2> mLeftPlayer = new List<Vector2>();
+                    for (int i = 0; i < futureAmount; i++)
+                    {
+
+                        foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["RightTeamLocations"][playerId])
+                        {
+                            // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
+                            mRightPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
+                        }
+                        foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["LeftTeamLocations"][playerId])
+                        {
+                            // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
+                            mLeftPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
+                        }
+                    }
+                    mplayersPositions.Add(mRightPlayer);
+                    mplayersPositions.Add(mLeftPlayer);
+                }
+                HeatmapGenerator.GenerateHeatmap(playersPositions, Radius, Resolution, Sigma);
+                HeatmapGenerator.GenerateHeatmap(mplayersPositions, Radius, Resolution, Sigma, "Miniature");
+                HeatmapGenerator.updateHeatmap(Saturation, Value, Transparent, heatmapGradient);
             }
         }
     }
@@ -271,20 +331,12 @@ public class MovableFootball : MonoBehaviour
                 {
                     if (stepSituationPair.Key == "right_team")
                     {
-                        // foreach (var location in stepSituationPair.Value)
-                        // {
-                        //     print("URL Right Team Locations: " + location[0] + " ;   " + location[1]);
-                        // }
                         teamLocations[stepSituationPair.Key] = stepSituationPair.Value;
                         teamLocations[stepSituationPair.Key].RemoveAt(0);
                     }
 
                     else if (stepSituationPair.Key == "left_team")
                     {
-                        // foreach (var location in stepSituationPair.Value)
-                        // {
-                        //     print("URL Left Team Locations: " + location[0] + " ;   " + location[1]);
-                        // }
                         teamLocations[stepSituationPair.Key] = stepSituationPair.Value;
                         teamLocations[stepSituationPair.Key].RemoveAt(0);
                     }
@@ -306,8 +358,8 @@ public class MovableFootball : MonoBehaviour
     protected enum urlType { getRealWorldPos, getUnityPos, getOriginalGamePos }
     public string generateURL(string urlType, bool ifOriginalGame, int gameDuration, int EachPlayerNumber) /***urlType: getRealWorldPos; getUnityPos; getOriginalGamePos***/
     {
-        string url = string.Format("http://10.233.53.149:5000/get?gameDuration=" + gameDuration.ToString() + "&futureAmount=0" + "&originalGame=" + (ifOriginalGame ? ("0") : ("1")));
-        // string url = string.Format("http://192.168.0.124:5000/get?gameDuration=" + gameDuration.ToString() + "&futureAmount=0" + "&originalGame=" + (ifOriginalGame ? ("0") : ("1")));
+        // string url = string.Format("http://10.233.53.149:5000/get?gameDuration=" + gameDuration.ToString() + "&futureAmount=0" + "&originalGame=" + (ifOriginalGame ? ("0") : ("1")));
+        string url = string.Format("http://192.168.0.124:5000/get?gameDuration=" + gameDuration.ToString() + "&futureAmount=0" + "&originalGame=" + (ifOriginalGame ? ("0") : ("1")));
 
         if (urlType.Equals("getRealWorldPos"))
         {
@@ -385,9 +437,9 @@ public class MovableFootball : MonoBehaviour
 
     public string generateURL(string urlType, bool ifOriginalGame, int gameDuration, string step, Dictionary<string, List<List<float>>> teamLocations, int futureAmount)
     {
-        string url = string.Format("http://10.233.53.149:5000/get?gameDuration=" + gameDuration.ToString() + "&futureAmount=" + futureAmount + "&originalGame=" + (ifOriginalGame ? ("0") : ("1")) + "&step=" + step);
+        // string url = string.Format("http://10.233.53.149:5000/get?gameDuration=" + gameDuration.ToString() + "&futureAmount=" + futureAmount + "&originalGame=" + (ifOriginalGame ? ("0") : ("1")) + "&step=" + step);
 
-        // string url = string.Format("http://192.168.0.124:5000/get?gameDuration=" + gameDuration.ToString() + "&futureAmount=" + futureAmount + "&originalGame=" + (ifOriginalGame ? ("0") : ("1")) + "&step=" + step);
+        string url = string.Format("http://192.168.0.124:5000/get?gameDuration=" + gameDuration.ToString() + "&futureAmount=" + futureAmount + "&originalGame=" + (ifOriginalGame ? ("0") : ("1")) + "&step=" + step);
         foreach (var teamLocationPair in teamLocations)
         {
             if (teamLocationPair.Key.Equals("right_team"))
@@ -415,6 +467,76 @@ public class MovableFootball : MonoBehaviour
         return url;
     }
 
+    public Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> loadPregenerateJson(string gameType)
+    {
+        string folderPath = "D:/tmp/Data/";
+        string[] scenariosJsonFiles = Directory.GetDirectories(folderPath, "OriginalDuration*");
+
+        Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> stepMultiFuture = new Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>>();
+
+        string[] structuredGameJsonPaths = Directory.GetFiles(scenariosJsonFiles[1], "*.json");
+        print(scenariosJsonFiles[1]);
+
+        if (gameType.Contains("OriginalGame"))
+        {
+            foreach (var eachJsonFilePath in structuredGameJsonPaths)
+            {
+                if (eachJsonFilePath.Contains("OriginalGame"))
+                {
+                    string stepsJson = File.ReadAllText(eachJsonFilePath);
+                    return parseGFJson(stepsJson);
+                }
+            }
+        }
+        else if (gameType.Contains("Step"))
+        {
+            foreach (var eachJsonFilePath in structuredGameJsonPaths)
+            {
+                if (eachJsonFilePath.Contains("Step"))
+                {
+                    string stepsJson = File.ReadAllText(eachJsonFilePath);
+                    string eachJsonFileName = Path.GetFileNameWithoutExtension(eachJsonFilePath);
+                    stepMultiFuture.Add(eachJsonFileName, parseGFJson(stepsJson)[eachJsonFileName]);
+                }
+            }
+        }
+        return stepMultiFuture;
+    }
+
+    public Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> parseGFJson(string Json)
+    {
+        Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> structuredGame = new Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>>();
+        var originalGameMultiFuture = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, Dictionary<string, List<List<float>>>>>>>(Json);
+
+        //TO-DO
+        foreach (var infoPair in originalGameMultiFuture)
+        {
+            if (infoPair.Key.Contains("OriginalGame"))
+            {
+                Dictionary<string, List<List<List<float>>>> gameSituation = new Dictionary<string, List<List<List<float>>>>();
+                gameSituation = passDatatoStrcuture(EachPlayerNumber, infoPair.Value[0]);
+
+                List<Dictionary<string, List<List<List<float>>>>> temp_gameSituation = new List<Dictionary<string, List<List<List<float>>>>>();
+                temp_gameSituation.Add(gameSituation);
+                structuredGame["OriginalGame"] = new List<Dictionary<string, List<List<List<float>>>>>(temp_gameSituation);
+
+            }
+            else if (infoPair.Key.Contains("Step"))
+            {
+                List<Dictionary<string, List<List<List<float>>>>> stepFuturePair = new List<Dictionary<string, List<List<List<float>>>>>();
+
+
+                for (int futureNo = 0; futureNo < infoPair.Value.Count; futureNo++)
+                {
+                    stepFuturePair.Add(passDatatoStrcuture(EachPlayerNumber, infoPair.Value[futureNo]));
+                }
+
+                structuredGame[infoPair.Key] = stepFuturePair;
+            }
+        }
+        return structuredGame;
+    }
+
     public Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> PyFootball(int EachPlayerNumber, bool ifOriginalGame, string url) /*** originalGame=0: original game, originalGame=1: future game***/
     {
         print(url);
@@ -434,52 +556,22 @@ public class MovableFootball : MonoBehaviour
         }
         ***/
         Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> structuredGame = new Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>>();
-
         using (System.IO.StreamReader Observation = new System.IO.StreamReader(respStream))
         {
             string Steps = "";
             while ((Steps = Observation.ReadLine()) != null)
             {
                 print(Steps);
-
+                structuredGame = parseGFJson(Steps);
                 var originalGameMultiFuture = JsonConvert.DeserializeObject<Dictionary<string, List<Dictionary<string, Dictionary<string, List<List<float>>>>>>>(Steps);
-
                 if (ifOriginalGame)
                 {
                     originalStructuredGame = originalGameMultiFuture;
-                }
-
-                //TO-DO
-                foreach (var infoPair in originalGameMultiFuture)
-                {
-                    if (infoPair.Key.Contains("OriginalGame"))
-                    {
-                        Dictionary<string, List<List<List<float>>>> gameSituation = new Dictionary<string, List<List<List<float>>>>();
-                        gameSituation = passDatatoStrcuture(EachPlayerNumber, infoPair.Value[0]);
-
-                        List<Dictionary<string, List<List<List<float>>>>> temp_gameSituation = new List<Dictionary<string, List<List<List<float>>>>>();
-                        temp_gameSituation.Add(gameSituation);
-                        structuredGame["OriginalGame"] = new List<Dictionary<string, List<List<List<float>>>>>(temp_gameSituation);
-
-                    }
-                    else if (infoPair.Key.Contains("Step"))
-                    {
-                        List<Dictionary<string, List<List<List<float>>>>> stepFuturePair = new List<Dictionary<string, List<List<List<float>>>>>();
-
-
-                        for (int futureNo = 0; futureNo < infoPair.Value.Count; futureNo++)
-                        {
-                            stepFuturePair.Add(passDatatoStrcuture(EachPlayerNumber, infoPair.Value[futureNo]));
-                        }
-
-                        structuredGame[infoPair.Key] = stepFuturePair;
-                    }
                 }
             }
             Observation.Close();
         }
         wResp.Close();
-
         return structuredGame;
     }
 
@@ -501,7 +593,9 @@ public class MovableFootball : MonoBehaviour
                     float Location_y = infoPair.Value[playerId][step_num][1];
 
                     rPlayerObject.transform.position = new Vector3(scale_x(Location_x) / 1, -1.8f, scale_z(Location_y) / 1);
-                    mPlayerObject.transform.position = new Vector3(scale_x(Location_x) / scaleSize, -0.2f, scale_z(Location_y) / scaleSize);
+
+                    Vector3 localPosition = GameObject.Find("MovableMiniature").transform.InverseTransformPoint(mPlayerObject.transform.position);
+                    mPlayerObject.transform.localPosition = new Vector3(scale_x(Location_x) / scaleSize, -0.2f, scale_z(Location_y) / scaleSize);
                 }
 
             }
