@@ -19,6 +19,15 @@ public class MovableFootball : MonoBehaviour
     public GameResourceType ResourceType;
     private string selectedResourceType;
 
+    public enum Scenarios
+    {
+        OriginalDuration2_FutureAmount5_FutureFar20_Interval3,
+        OriginalDuration500_FutureAmount5_FutureFar20_Interval5,
+        OriginalDuration1000_FutureAmount10_FutureFar20_Interval3
+    }
+    [SerializeField]
+    public Scenarios ScenariosConfiguration;
+    private string selectedScenarioConfiguration;
 
     ///*** Right Team ***/
     public static string RightPlayer = "mRightPlayer";
@@ -52,7 +61,7 @@ public class MovableFootball : MonoBehaviour
     public List<Dictionary<string, List<List<List<float>>>>> New_Team = new List<Dictionary<string, List<List<List<float>>>>>();
 
     /*** Game Pause ***/
-    public static bool gamePause = false; // Pause: false; Play: true
+    public static bool gamePlay = false; // Pause: false; Play: true
 
     /*** Game Reset ***/
     public static bool gameReset = false;
@@ -74,6 +83,7 @@ public class MovableFootball : MonoBehaviour
     public static int scaleSize = 200;
 
     /*** Heatmap ***/
+    public static bool showHeatmap = false;
     public Gradient heatmapGradient;
     [Range(-1, 1)]
     public float Saturation = 0;
@@ -119,18 +129,52 @@ public class MovableFootball : MonoBehaviour
             	[[Lid 2, a2], [Rid 2, A2]]]}
     ***/
 
+    /*** Movable Miniature***/
+    // private GameObject mainCameraObject;
+
+
     // Start is called before the first frame update
-
-
-    // int futureDuration = 10;
     void Start()
     {
+        // mainCameraObject = GameObject.Find("Main Camera");
         time = 0f;
         gameDuration = 0;
         // TimeDelay = 0.1f; // * Speed Control*
 
         System.Diagnostics.Stopwatch sw = new System.Diagnostics.Stopwatch();
         sw.Start();
+        switch (ScenariosConfiguration)
+        {
+            case Scenarios.OriginalDuration2_FutureAmount5_FutureFar20_Interval3:
+                selectedScenarioConfiguration = "OriginalDuration2_FutureAmount5_FutureFar20_Interval3";
+                break;
+            case Scenarios.OriginalDuration500_FutureAmount5_FutureFar20_Interval5:
+                selectedScenarioConfiguration = "OriginalDuration500_FutureAmount5_FutureFar20_Interval5";
+                break;
+            case Scenarios.OriginalDuration1000_FutureAmount10_FutureFar20_Interval3:
+                selectedScenarioConfiguration = "OriginalDuration1000_FutureAmount10_FutureFar20_Interval3";
+                break;
+        }
+
+        // Find the index of the underscore (_) separating the two substrings
+        int underscoreIndex = selectedScenarioConfiguration.IndexOf("_");
+        if (underscoreIndex != -1)
+        {
+            fixedGameDuration = int.Parse(selectedScenarioConfiguration.Substring(0, underscoreIndex).Replace("OriginalDuration", ""));
+            string FutureAmount_FutureFar_Interval = selectedScenarioConfiguration.Remove(0, underscoreIndex + 1);
+            underscoreIndex = FutureAmount_FutureFar_Interval.IndexOf("_");
+            if (underscoreIndex != -1)
+            {
+                futureAmount = int.Parse(FutureAmount_FutureFar_Interval.Substring(0, underscoreIndex).Replace("FutureAmount", ""));
+                string FutureFar_Interval = FutureAmount_FutureFar_Interval.Remove(0, underscoreIndex + 1);
+                underscoreIndex = FutureFar_Interval.IndexOf("_");
+                if (underscoreIndex != -1)
+                    FarFuture = int.Parse(FutureFar_Interval.Substring(0, underscoreIndex).Replace("FutureFar", ""));
+            }
+        }
+        print("Selected Fixed Game Duration: " + fixedGameDuration);
+        print("Selected Future Amount: " + futureAmount);
+        print("Select Far Future: " + FarFuture);
 
         switch (ResourceType)
         {
@@ -142,7 +186,6 @@ public class MovableFootball : MonoBehaviour
                 selectedResourceType = "PregeneratedGame";
                 break;
         }
-
         if (selectedResourceType == "WebRequest")
         {
             print("Sending Web Request To Python...");
@@ -153,9 +196,11 @@ public class MovableFootball : MonoBehaviour
         else if (selectedResourceType == "PregeneratedGame")
         {
             print("Loading Json Files From Folders...");
-            originalGame = loadPregenerateJson("OriginalGame")["OriginalGame"][0];
-            stepMultiFuture = loadPregenerateJson("Step");
+            print(selectedScenarioConfiguration);
+            originalGame = loadPregenerateJson(selectedScenarioConfiguration, "OriginalGame")["OriginalGame"][0];
+            stepMultiFuture = loadPregenerateJson(selectedScenarioConfiguration, "Step");
         }
+
         sw.Stop();
         print("Cost time: " + sw.ElapsedMilliseconds);
 
@@ -166,6 +211,15 @@ public class MovableFootball : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        print("Refresh Rate: " + Screen.currentResolution.refreshRate);
+        // print("Refresh Rate: " + Application.targetFrameRate);
+
+        /*** Movable Miniature***/
+        // GameObject.Find("MovableMiniature").transform.position = new Vector3(mainCameraObject.transform.position.x, 0, mainCameraObject.transform.position.z + 0.2f);
+        GameUserInterface.updateGUIView();
+        /*** Movable Buttons***/
+
+
         // updateHeatmapTime = updateHeatmapTime + 1f * Time.deltaTime;
         // if (updateHeatmapTime > 0.2)
         // {
@@ -174,7 +228,6 @@ public class MovableFootball : MonoBehaviour
         //     // HeatmapGenerator.GenerateHeatmap(mplayersPositions, Radius, Resolution, Sigma, "Miniature");
         //     // HeatmapGenerator.updateHeatmap(Saturation, Value, Transparent, heatmapGradient);
         // }
-        realTimeHeatmap(stepMultiFuture, StepNum);
 
 
         // ****** Big Ball ******
@@ -187,31 +240,35 @@ public class MovableFootball : MonoBehaviour
         GameObject bigBall = GameObject.Find("BigBall");
         bigBall.transform.position = new Vector3(BallSphere.transform.position.x * scaleSize, -1.7f, BallSphere.transform.position.z * scaleSize);
 
-        if (!gamePause)
+        if (gamePlay)
         {
             time = time + 1f * Time.deltaTime;
             if (time >= TimeDelay && StepNum < fixedGameDuration)
             {
                 time = 0f;
 
-                MultiFuture.updateFutureInfo(StepNum, FarFuture, showFuture);
                 player(originalGame, StepNum);
+                MultiFuture.updateFutureInfo(StepNum, FarFuture, showFuture);
+                realTimeHeatmap(stepMultiFuture, StepNum, showHeatmap);
 
                 StepNum += 1;
             }
         }
 
-        if (gamePause)
+        if (!gamePlay)
         {
             if (StepNum < fixedGameDuration)
             {
-                MultiFuture.updateFutureInfo(StepNum, FarFuture, showFuture);
+                // MultiFuture.updateFutureInfo(StepNum, FarFuture, showFuture);
+                // player(originalGame, StepNum);
                 player(originalGame, StepNum);
+                MultiFuture.updateFutureInfo(StepNum, FarFuture, showFuture);
+                realTimeHeatmap(stepMultiFuture, StepNum, showHeatmap);
             }
         }
     }
 
-    public void realTimeHeatmap(Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> stepMultiFuture, int currentStep)
+    public void realTimeHeatmap(Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> stepMultiFuture, int currentStep, bool showHeatmap)
     {
         foreach (var stepFuturesPair in stepMultiFuture)
         {
@@ -261,7 +318,7 @@ public class MovableFootball : MonoBehaviour
                 }
                 HeatmapGenerator.GenerateHeatmap(playersPositions, Radius, Resolution, Sigma);
                 HeatmapGenerator.GenerateHeatmap(mplayersPositions, Radius, Resolution, Sigma, "Miniature");
-                HeatmapGenerator.updateHeatmap(Saturation, Value, Transparent, heatmapGradient);
+                HeatmapGenerator.updateHeatmap(Saturation, Value, Transparent, heatmapGradient, showHeatmap);
             }
         }
     }
@@ -467,15 +524,28 @@ public class MovableFootball : MonoBehaviour
         return url;
     }
 
-    public Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> loadPregenerateJson(string gameType)
+    // public static List<string> parseConfigFromFolderName()
+    // {
+    //     string folderPath = "D:/tmp/Data/";
+    //     string[] scenariosJsonFiles = Directory.GetDirectories(folderPath, "OriginalDuration*");
+
+    //     List<string> config = new List<string>();
+    //     foreach (var configPath in scenariosJsonFiles)
+    //     {
+    //         config.Add(Path.GetFileNameWithoutExtension(configPath));
+    //     }
+
+    //     return config;
+    // }
+
+    public Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> loadPregenerateJson(string config, string gameType)
     {
         string folderPath = "D:/tmp/Data/";
-        string[] scenariosJsonFiles = Directory.GetDirectories(folderPath, "OriginalDuration*");
+        string[] scenariosFolder = Directory.GetDirectories(folderPath, "OriginalDuration*");
 
         Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> stepMultiFuture = new Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>>();
 
-        string[] structuredGameJsonPaths = Directory.GetFiles(scenariosJsonFiles[1], "*.json");
-        print(scenariosJsonFiles[1]);
+        string[] structuredGameJsonPaths = Directory.GetFiles(folderPath + config, "*.json");
 
         if (gameType.Contains("OriginalGame"))
         {
@@ -502,6 +572,7 @@ public class MovableFootball : MonoBehaviour
         }
         return stepMultiFuture;
     }
+
 
     public Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> parseGFJson(string Json)
     {
@@ -593,8 +664,6 @@ public class MovableFootball : MonoBehaviour
                     float Location_y = infoPair.Value[playerId][step_num][1];
 
                     rPlayerObject.transform.position = new Vector3(scale_x(Location_x) / 1, -1.8f, scale_z(Location_y) / 1);
-
-                    Vector3 localPosition = GameObject.Find("MovableMiniature").transform.InverseTransformPoint(mPlayerObject.transform.position);
                     mPlayerObject.transform.localPosition = new Vector3(scale_x(Location_x) / scaleSize, -0.2f, scale_z(Location_y) / scaleSize);
                 }
 

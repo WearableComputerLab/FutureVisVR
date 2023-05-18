@@ -99,23 +99,21 @@ public class MultiFuture : MonoBehaviour
                             for (int playerId = 0; playerId < infoPair.Value.Count; playerId++)
                             {
                                 playerNumber++;
-                                List<Vector3> playerPathPosition = new List<Vector3>();
+                                List<Vector3> rPlayerPathPosition = new List<Vector3>();
                                 List<Vector3> mPlayerPathPosition = new List<Vector3>();
 
                                 // for (int step = currentStep; step < ((currentStep + farFuture) < gameDuration ? (currentStep + farFuture) : (gameDuration - currentStep)); step++)
                                 for (int step = 0; step < gameDuration; step++)
                                 {
-                                    // print("SSSSSSSStep: " + ((currentStep + farFuture) < gameDuration ? (currentStep + farFuture) : (gameDuration - currentStep)).ToString());
-                                    // print("*** Step ***: " + step + " ; *** Player Id ***: " + playerId);
-                                    // print("PlayerID: " + playerId.ToString() + "; Step: " + step + "; Original Locations: (" + infoPair.Value[playerId][step][0] + ", " + infoPair.Value[playerId][step][1] + ")");
-                                    // print("PlayerID: " + playerId.ToString() + "; Step: " + step + "; Transformed Locations: (" + MovableFootball.scale_x(infoPair.Value[playerId][step][0]) + ", " + MovableFootball.scale_z(infoPair.Value[playerId][step][1]) + ")");
-
                                     Vector3 rPlayerPosition = new Vector3(MovableFootball.scale_x(infoPair.Value[playerId][step][0]) / 1, -1.55f, MovableFootball.scale_z(infoPair.Value[playerId][step][1]) / 1);
                                     Vector3 mPlayerPosition = new Vector3(MovableFootball.scale_x(infoPair.Value[playerId][step][0]) / MovableFootball.scaleSize, -0.195f, MovableFootball.scale_z(infoPair.Value[playerId][step][1]) / MovableFootball.scaleSize);
 
+                                    Vector3 mLocalPosition = GameObject.Find("MovableMiniature").transform.TransformPoint(mPlayerPosition);
+
                                     /*** Path ***/
-                                    playerPathPosition.Add(rPlayerPosition);
-                                    mPlayerPathPosition.Add(mPlayerPosition);
+                                    rPlayerPathPosition.Add(rPlayerPosition);
+                                    // mPlayerPathPosition.Add(mPlayerPosition);
+                                    mPlayerPathPosition.Add(mLocalPosition);
 
                                     /*** Event ***/
                                     float leftPlayer = eachFuture["Event"][step][0][0];
@@ -149,7 +147,7 @@ public class MultiFuture : MonoBehaviour
                                     }
                                 }
 
-                                lineDraw(rPlayer + playerId.ToString() + "LineRenderer" + futureNo, farFuture, playerPathPosition.ToArray());
+                                lineDraw(rPlayer + playerId.ToString() + "LineRenderer" + futureNo, farFuture, rPlayerPathPosition.ToArray());
                                 lineDraw(mPlayer + playerId.ToString() + "LineRenderer" + futureNo, farFuture, mPlayerPathPosition.ToArray());
                                 visFuturePath(rPlayer + playerId.ToString() + "LineRenderer" + futureNo, futureVisShow);
                                 visFuturePath(mPlayer + playerId.ToString() + "LineRenderer" + futureNo, futureVisShow);
@@ -171,91 +169,6 @@ public class MultiFuture : MonoBehaviour
                 }
             }
         }
-
-
-
-        // foreach (var eachFuture in stepMultiFuture)
-        // {
-        //     futureNo++;
-        //     List<Dictionary<int, Vector3>> passEventPositions = new List<Dictionary<int, Vector3>>();
-        //     List<Dictionary<int, Vector3>> shotEventPositions = new List<Dictionary<int, Vector3>>();
-
-        //     String eventPlayer = null;
-
-        //     foreach (var infoPair in eachFuture)
-        //     {
-        //         // if (infoPair.Key.Contains("RightTeamLocations"))
-        //         if (infoPair.Key.Contains("TeamLocations"))
-        //         {
-        //             String rPlayer = infoPair.Key.Replace("TeamLocations", "Player"); /*** "Right" or "Left" ***/
-        //             String mPlayer = "m" + rPlayer;
-
-        //             for (int playerId = 0; playerId < infoPair.Value.Count; playerId++)
-        //             {
-        //                 playerNumber++;
-        //                 List<Vector3> playerPathPosition = new List<Vector3>();
-        //                 List<Vector3> mPlayerPathPosition = new List<Vector3>();
-
-        //                 for (int step = currentStep; step < ((currentStep + farFuture) < gameDuration ? (currentStep + farFuture) : (gameDuration - currentStep)); step++)
-        //                 {
-        //                     Vector3 rPlayerPosition = new Vector3(MovableFootball.scale_x(infoPair.Value[playerId][step][0]) / 1, -1.55f, MovableFootball.scale_z(infoPair.Value[playerId][step][1]) / 1);
-        //                     Vector3 mPlayerPosition = new Vector3(MovableFootball.scale_x(infoPair.Value[playerId][step][0]) / MovableFootball.scaleSize, -0.195f, MovableFootball.scale_z(infoPair.Value[playerId][step][1]) / MovableFootball.scaleSize);
-
-        //                     /*** Path ***/
-        //                     playerPathPosition.Add(rPlayerPosition);
-        //                     mPlayerPathPosition.Add(mPlayerPosition);
-
-        //                     /*** Event ***/
-        //                     float leftPlayer = eachFuture["Event"][step][0][0];
-        //                     float rightPlayer = eachFuture["Event"][step][1][0];
-        //                     float leftAction = eachFuture["Event"][step][0][1];
-        //                     float rightAction = eachFuture["Event"][step][1][1];
-
-        //                     if (leftPlayer.Equals(playerId.ToString()) || rightPlayer.Equals(playerId.ToString()))
-        //                     {
-        //                         /*** PlayerId with Event ***/
-        //                         if (leftPlayer.Equals(playerId.ToString()))
-        //                             eventPlayer = "LeftPlayer" + leftPlayer.ToString();
-        //                         else if (rightPlayer.Equals(playerId.ToString()))
-        //                             eventPlayer = "rightPlayer" + leftPlayer.ToString();
-
-        //                         if ((9 <= leftAction && leftAction <= 11) || (9 <= rightAction && rightAction <= 11))
-        //                         {
-        //                             Destroy(listCopyEventPlayer[futureNo]);
-        //                             Dictionary<int, Vector3> tempPosition = new Dictionary<int, Vector3>();
-        //                             tempPosition.Add(step, rPlayerPosition);
-        //                             passEventPositions.Add(tempPosition);
-        //                         }
-        //                         else if (leftAction == 12 || rightAction == 12)
-        //                         {
-        //                             Destroy(listCopyEventPlayer[futureNo]);
-
-        //                             Dictionary<int, Vector3> tempPosition = new Dictionary<int, Vector3>();
-        //                             tempPosition.Add(step, rPlayerPosition);
-        //                             shotEventPositions.Add(tempPosition);
-        //                         }
-        //                     }
-        //                 }
-
-        //                 lineDraw(rPlayer + playerId.ToString() + "LineRenderer" + futureNo, farFuture, playerPathPosition.ToArray());
-        //                 lineDraw(mPlayer + playerId.ToString() + "LineRenderer" + futureNo, farFuture, mPlayerPathPosition.ToArray());
-        //                 visFuturePath(rPlayer + playerId.ToString() + "LineRenderer" + futureNo, futureVisShow);
-        //                 visFuturePath(mPlayer + playerId.ToString() + "LineRenderer" + futureNo, futureVisShow);
-
-        //             }
-        //         }
-
-        //         if (passEventPositions.Count != 0 || eventPlayer != null)
-        //         {
-        //             createEventPlayer(passEventPositions, currentStep, eventPlayer, listCopyEventPlayer[futureNo]);
-        //         }
-        //         else if (shotEventPositions.Count != 0 || eventPlayer != null)
-        //         {
-        //             createEventPlayer(shotEventPositions, currentStep, eventPlayer, listCopyEventPlayer[futureNo]);
-        //         }
-
-        //     }
-        // }
     }
 
     public static void createEventPlayer(List<Dictionary<int, Vector3>> EventPositions, int currentStep, String eventPlayer, GameObject copyEventPlayer)
@@ -277,11 +190,11 @@ public class MultiFuture : MonoBehaviour
     }
 
 
-    public static void visFuturePath(String rPlayer, bool show)
+    public static void visFuturePath(String Player, bool show)
     {
-        if (GameObject.Find(rPlayer).GetComponent<LineRenderer>() != null)
+        if (GameObject.Find(Player).GetComponent<LineRenderer>() != null)
         {
-            LineRenderer line = GameObject.Find(rPlayer).GetComponent<LineRenderer>();
+            LineRenderer line = GameObject.Find(Player).GetComponent<LineRenderer>();
             line.enabled = show;
         }
     }
@@ -305,10 +218,10 @@ public class MultiFuture : MonoBehaviour
             2. Each LineRenderer game object contains one LineRender component.
         ***/
 
-        GameObject rPlayer = GameObject.Find(objectName);
+        GameObject Player = GameObject.Find(objectName);
         GameObject lr = Instantiate(emptyLineRenderer);
         lr.name = objectName + "LineRenderer" + futureNumber.ToString();
-        lr.transform.SetParent(rPlayer.transform, true);
+        lr.transform.SetParent(Player.transform, true);
         lr.AddComponent<LineRenderer>();
 
     }
