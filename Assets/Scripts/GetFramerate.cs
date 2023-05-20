@@ -17,6 +17,9 @@ public class GetFramerate : MonoBehaviour
         string fpsText = string.Format("{0:0.} FPS", fps);
 
         // Display the current framerate
-        GUI.Label(new Rect(10, 10, 100, 20), fpsText);
+        GUIStyle style = new GUIStyle();
+        style.fontSize = 60;
+        style.normal.textColor = Color.red;
+        GUI.Label(new Rect(10, 10, 100, 20), fpsText, style);
     }
 }

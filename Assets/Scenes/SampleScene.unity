@@ -3768,6 +3768,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1375765291}
   - component: {fileID: 1375765290}
+  - component: {fileID: 1375765292}
   m_Layer: 0
   m_Name: FootballEngine
   m_TagString: Untagged
@@ -3788,7 +3789,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   ResourceType: 1
-  ScenariosConfiguration: 1
+  ScenariosConfiguration: 2
   TimeDelay: 0.2
   EachPlayerNumber: 11
   FarFuture: 20
@@ -3845,6 +3846,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 5
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1375765292
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1375765289}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ec1d6da279635fb449fe34ead81e8355, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1001 &1402447187
 PrefabInstance:
   m_ObjectHideFlags: 0

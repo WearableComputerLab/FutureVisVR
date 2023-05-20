@@ -211,9 +211,6 @@ public class MovableFootball : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        print("Refresh Rate: " + Screen.currentResolution.refreshRate);
-        // print("Refresh Rate: " + Application.targetFrameRate);
-
         /*** Movable Miniature***/
         // GameObject.Find("MovableMiniature").transform.position = new Vector3(mainCameraObject.transform.position.x, 0, mainCameraObject.transform.position.z + 0.2f);
         GameUserInterface.updateGUIView();
