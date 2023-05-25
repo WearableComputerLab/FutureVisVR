@@ -11,8 +11,9 @@ public class GameUserInterface : MonoBehaviour
         /*** Main Camera View  ***/
         Camera mainCamera = Camera.main;
 
-        GameObject mainCameraObject = GameObject.Find("Main Camera");
+        // GameObject mainCameraObject = GameObject.Find("Main Camera");
         // GameObject mainCameraObject = GameObject.Find("MRTK-Quest_OVRCameraRig(Clone)");
+        GameObject mainCameraObject = GameObject.Find("OVRCameraRig");
 
         /*** Play/Pause Button ***/
         // // Get the camera's viewport position for the bottom left corner (0, 0)

@@ -67,32 +67,6 @@ public class MultiFuture : MonoBehaviour
         int futureNo = 0;
         int playerNumber = 0;
 
-
-        // if (futureVisShow && tempShowFuture == 0)
-        // {
-        //     tempShowFuture = 1;
-        //     print("Show Future Path");
-
-        //     String rRightPlayer = "RightPlayer";
-        //     String mRightPlayer = "m" + rRightPlayer;
-        //     String rLeftPlayer = "LeftPlayer";
-        //     String mLeftPlayer = "m" + rLeftPlayer;
-        //     for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
-        //     {
-        //         for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
-        //         {
-        //             visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-        //             visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-        //             visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-        //             visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-        //         }
-        //     }
-        // }
-        // else if (!futureVisShow)
-        // {
-        //     tempShowFuture = 0;
-        // }
-
         /***
         Structure:
         {
@@ -110,10 +84,10 @@ public class MultiFuture : MonoBehaviour
         // {
         //     tempShowFuture = 0;
         // }
-        if ((temCurrentStep != currentStep) || (tempShowFuture != futureVisShow)) // || (futureVisShow && tempShowFuture == 0)
+        if ((temCurrentStep != currentStep)) // || (futureVisShow && tempShowFuture == 0)
         {
             temCurrentStep = currentStep;
-            tempShowFuture = futureVisShow;
+            // tempShowFuture = futureVisShow;
 
             foreach (var stepFuturesPair in stepMultiFuture)
             {
@@ -148,6 +122,7 @@ public class MultiFuture : MonoBehaviour
                                     {
                                         Vector3 rPlayerPosition = new Vector3(MovableFootball.scale_x(infoPair.Value[playerId][step][0]) / 1, -1.55f, MovableFootball.scale_z(infoPair.Value[playerId][step][1]) / 1);
                                         Vector3 mPlayerPosition = new Vector3(MovableFootball.scale_x(infoPair.Value[playerId][step][0]) / MovableFootball.scaleSize, -0.195f, MovableFootball.scale_z(infoPair.Value[playerId][step][1]) / MovableFootball.scaleSize);
+                                        // Vector3 mPlayerPosition = new Vector3(MovableFootball.scale_x(infoPair.Value[playerId][step][0]) / MovableFootball.scaleSize, GameObject.Find(mPlayer).transform.position.y - 0.005f, MovableFootball.scale_z(infoPair.Value[playerId][step][1]) / MovableFootball.scaleSize);
 
                                         Vector3 mLocalPosition = GameObject.Find("MovableMiniature").transform.TransformPoint(mPlayerPosition);
 
@@ -190,10 +165,6 @@ public class MultiFuture : MonoBehaviour
 
                                     lineDraw(rPlayer + playerId.ToString() + "LineRenderer" + futureNo, farFuture, rPlayerPathPosition.ToArray());
                                     lineDraw(mPlayer + playerId.ToString() + "LineRenderer" + futureNo, farFuture, mPlayerPathPosition.ToArray());
-                                    visFuturePath(rPlayer + playerId.ToString() + "LineRenderer" + futureNo, futureVisShow);
-                                    visFuturePath(mPlayer + playerId.ToString() + "LineRenderer" + futureNo, futureVisShow);
-
-                                    // tempShowFuture = 1;
                                     // visFuturePath(rPlayer + playerId.ToString() + "LineRenderer" + futureNo, futureVisShow);
                                     // visFuturePath(mPlayer + playerId.ToString() + "LineRenderer" + futureNo, futureVisShow);
 
@@ -212,6 +183,28 @@ public class MultiFuture : MonoBehaviour
 
                         }
                     }
+                }
+            }
+        }
+
+        if (tempShowFuture != futureVisShow)
+        {
+            tempShowFuture = futureVisShow;
+
+            print("futureNo:" + futureNo);
+
+            String rRightPlayer = "RightPlayer";
+            String mRightPlayer = "m" + rRightPlayer;
+            String rLeftPlayer = "LeftPlayer";
+            String mLeftPlayer = "m" + rLeftPlayer;
+            for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
+            {
+                for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                {
+                    visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                    visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                    visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                    visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
                 }
             }
         }

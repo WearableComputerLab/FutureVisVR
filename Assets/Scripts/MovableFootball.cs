@@ -130,7 +130,8 @@ public class MovableFootball : MonoBehaviour
     ***/
 
     /*** Movable Miniature***/
-    // private GameObject mainCameraObject;
+    public static bool showMiniatureView;
+    public static bool showMovableMiniature;
 
 
     // Start is called before the first frame update
@@ -205,7 +206,8 @@ public class MovableFootball : MonoBehaviour
         print("Cost time: " + sw.ElapsedMilliseconds);
 
         MultiFuture.startFutureInfo(stepMultiFuture, FarFuture);
-        MiniatureView.startMiniatureView();
+        // MiniatureView.startMiniatureView();
+        MiniatureView.startMovableMiniature();
     }
 
     // Update is called once per frame
@@ -213,7 +215,9 @@ public class MovableFootball : MonoBehaviour
     {
         /*** Movable Miniature***/
         // GameObject.Find("MovableMiniature").transform.position = new Vector3(mainCameraObject.transform.position.x, 0, mainCameraObject.transform.position.z + 0.2f);
-        GameUserInterface.updateGUIView();
+        // GameUserInterface.updateGUIView();
+        // MiniatureView.updateMiniatureView(showMiniatureView);
+        MiniatureView.updateMovableMiniature(showMovableMiniature);
         /*** Movable Buttons***/
 
 

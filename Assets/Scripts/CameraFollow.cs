@@ -4,37 +4,51 @@ using UnityEngine;
 
 public class CameraFollow : MonoBehaviour
 {
-    float m_Height = 1.9f;
+    [Range(0, 10)]
+    public float CameraHeight = 2.5f;
+    [Range(0, 10)]
 
-    float m_Distance = 0;
+    public float CameraDistance = 1f;
+    [Range(0, 100)]
+    public float FollowingSpeed = 1f;
+    [Range(0, 20)]
+    public float RotationSpeed = 1f;
 
-    float m_Speed = 100f;
 
-    Vector3 m_TargetPosition;
+    public static string AttachedGamePlayer = null;
 
-    Transform follow;
+    Vector3 Target_Position;
+
+    Transform Camera_Position;
     // Use this for initialization
     void Start()
     {
 
-        follow = GameObject.Find("RightPlayer2").transform;
+        Camera_Position = GameObject.Find("OVRCameraRig").transform;
     }
 
     // Update is called once per frame
 
     void LateUpdate()
     {
+        if (AttachedGamePlayer != null)
+        {
 
-        m_TargetPosition = follow.position + Vector3.up * m_Height - follow.forward * m_Distance;
+            GameObject player = GameObject.Find(AttachedGamePlayer);
 
-        transform.position = Vector3.Lerp(transform.position, m_TargetPosition, m_Speed);
+            Target_Position = player.transform.position + Vector3.up * CameraHeight - player.transform.forward * CameraDistance;
 
-        transform.rotation = follow.rotation;
+            Camera_Position.position = Vector3.Lerp(transform.position, Target_Position, FollowingSpeed);
 
+            // Camera_Position.LookAt(Target_Position);
+            Camera_Position.rotation = Quaternion.Lerp(transform.rotation, player.transform.rotation, RotationSpeed);
+            // Camera_Position.rotation = player.transform.rotation;
+        }
+    }
 
-
-        //transform.LookAt(follow);
-
-
+    public static void resetPosition()
+    {
+        AttachedGamePlayer = null;
+        GameObject.Find("OVRCameraRig").transform.position = new Vector3(0, 0, 0);
     }
 }
