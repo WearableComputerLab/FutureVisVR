@@ -23,7 +23,8 @@ public class MovableFootball : MonoBehaviour
     {
         OriginalDuration2_FutureAmount5_FutureFar20_Interval3,
         OriginalDuration500_FutureAmount5_FutureFar20_Interval5,
-        OriginalDuration1000_FutureAmount10_FutureFar20_Interval3
+        OriginalDuration1000_FutureAmount10_FutureFar20_Interval3,
+        OriginalDuration202_FutureAmount20_FutureFar100_Interval1
     }
     [SerializeField]
     public Scenarios ScenariosConfiguration;
@@ -53,7 +54,8 @@ public class MovableFootball : MonoBehaviour
     public static int gameDuration;
 
     /*** Step Number ***/
-    public static int StepNum = 0;
+    [Range(0, 500)]
+    public int StepNum = 0;
 
     /*** Each Team Players Number ***/
     public int EachPlayerNumber = 6;
@@ -72,8 +74,13 @@ public class MovableFootball : MonoBehaviour
 
     /*** Far Future ***/
     public int FarFuture = 5;
+    public static int multiFutureFar;
 
+    [Range(0, 1)]
+    public float FutureDetails = 0.5f;
     public int futureAmount = 2;
+    public static int multiFutureAmount;
+
     public int stepToCalculate = 3;
 
     /*** Get Real World Positions ***/
@@ -155,6 +162,9 @@ public class MovableFootball : MonoBehaviour
             case Scenarios.OriginalDuration1000_FutureAmount10_FutureFar20_Interval3:
                 selectedScenarioConfiguration = "OriginalDuration1000_FutureAmount10_FutureFar20_Interval3";
                 break;
+            case Scenarios.OriginalDuration202_FutureAmount20_FutureFar100_Interval1:
+                selectedScenarioConfiguration = "OriginalDuration202_FutureAmount20_FutureFar100_Interval1";
+                break;
         }
 
         // Find the index of the underscore (_) separating the two substrings
@@ -213,6 +223,9 @@ public class MovableFootball : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        multiFutureFar = FarFuture;
+        multiFutureAmount = futureAmount;
+        MultiFuture.updateFutureAmountFar(StepNum, FarFuture, FutureDetails, showFuture);
         /*** Movable Miniature***/
         // GameObject.Find("MovableMiniature").transform.position = new Vector3(mainCameraObject.transform.position.x, 0, mainCameraObject.transform.position.z + 0.2f);
         // GameUserInterface.updateGUIView();

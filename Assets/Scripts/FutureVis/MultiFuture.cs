@@ -118,6 +118,7 @@ public class MultiFuture : MonoBehaviour
                                     List<Vector3> mPlayerPathPosition = new List<Vector3>();
 
                                     // for (int step = currentStep; step < ((currentStep + farFuture) < gameDuration ? (currentStep + farFuture) : (gameDuration - currentStep)); step++)
+
                                     for (int step = 0; step < gameDuration; step++)
                                     {
                                         Vector3 rPlayerPosition = new Vector3(MovableFootball.scale_x(infoPair.Value[playerId][step][0]) / 1, -1.55f, MovableFootball.scale_z(infoPair.Value[playerId][step][1]) / 1);
@@ -200,6 +201,102 @@ public class MultiFuture : MonoBehaviour
             for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
             {
                 for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                // for (int eachFutureNumber = 1; eachFutureNumber <= MovableFootball.multiFutureAmount; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                {
+                    visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                    visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                    visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                    visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                }
+            }
+        }
+    }
+
+    public static void updateFutureAmountFar(int currentStep, int farFuture, float futureDetails, bool futureVisShow)
+    {
+        int futureNo = 0;
+        int playerNumber = 0;
+        foreach (var stepFuturesPair in stepMultiFuture)
+        {
+            if (stepFuturesPair.Key.Replace("Step", String.Empty).Equals(currentStep.ToString()))
+            {
+                // print("Current Step: " + currentStep);
+                foreach (var eachFuture in stepFuturesPair.Value)
+                {
+                    futureNo++;
+                    List<Dictionary<int, Vector3>> passEventPositions = new List<Dictionary<int, Vector3>>();
+                    List<Dictionary<int, Vector3>> shotEventPositions = new List<Dictionary<int, Vector3>>();
+                    foreach (var infoPair in eachFuture)
+                    {
+                        // if (infoPair.Key.Contains("RightTeamLocations"))
+                        // print("infoPair key TeamLocations: " + infoPair.Key + "; if contains TeamLocations: " + infoPair.Key.Contains("TeamLocations"));
+                        if (infoPair.Key.Contains("TeamLocations"))
+                        {
+                            String rPlayer = infoPair.Key.Replace("TeamLocations", "Player"); /*** "Right" or "Left" ***/
+                            String mPlayer = "m" + rPlayer;
+                            for (int playerId = 0; playerId < infoPair.Value.Count; playerId++)
+                            {
+                                playerNumber++;
+                                List<Vector3> rPlayerPathPosition = new List<Vector3>();
+                                List<Vector3> mPlayerPathPosition = new List<Vector3>();
+                                for (int step = 0; step < MovableFootball.multiFutureFar; step++)
+                                {
+                                    Vector3 rPlayerPosition = new Vector3(MovableFootball.scale_x(infoPair.Value[playerId][step][0]) / 1, -1.55f, MovableFootball.scale_z(infoPair.Value[playerId][step][1]) / 1);
+                                    Vector3 mPlayerPosition = new Vector3(MovableFootball.scale_x(infoPair.Value[playerId][step][0]) / MovableFootball.scaleSize, -0.195f, MovableFootball.scale_z(infoPair.Value[playerId][step][1]) / MovableFootball.scaleSize);
+
+                                    Vector3 mLocalPosition = GameObject.Find("MovableMiniature").transform.TransformPoint(mPlayerPosition);
+                                    /*** Path ***/
+                                    rPlayerPathPosition.Add(rPlayerPosition);
+                                    // mPlayerPathPosition.Add(mPlayerPosition);
+                                    mPlayerPathPosition.Add(mLocalPosition);
+                                }
+                                lineDraw(rPlayer + playerId.ToString() + "LineRenderer" + futureNo, farFuture, futureDetails, rPlayerPathPosition.ToArray());
+                                lineDraw(mPlayer + playerId.ToString() + "LineRenderer" + futureNo, farFuture, futureDetails, mPlayerPathPosition.ToArray());
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        String rRightPlayer = "RightPlayer";
+        String mRightPlayer = "m" + rRightPlayer;
+        String rLeftPlayer = "LeftPlayer";
+        String mLeftPlayer = "m" + rLeftPlayer;
+        for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
+        {
+            if (futureVisShow)
+            {
+                if (MovableFootball.multiFutureAmount == futureNumber)
+                {
+                    for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                    {
+                        visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                        visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                        visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                        visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                    }
+                }
+                if (MovableFootball.multiFutureAmount < futureNumber)
+                {
+                    for (int eachFutureNumber = 1; eachFutureNumber <= MovableFootball.multiFutureAmount; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                    {
+                        visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, true);
+                        visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, true);
+                        visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, true);
+                        visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, true);
+                    }
+                    for (int eachFutureNumber = MovableFootball.multiFutureAmount + 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                    {
+                        visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, false);
+                        visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, false);
+                        visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, false);
+                        visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, false);
+                    }
+                }
+            }
+            else
+            {
+                for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
                 {
                     visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
                     visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
@@ -273,6 +370,26 @@ public class MultiFuture : MonoBehaviour
         line.positionCount = farFuture;
         Material lineMaterial = Resources.Load<Material>("Material/Arrow");
         lineMaterial.mainTextureScale = new Vector2(farFuture / 2, 1);
+
+        line.material = lineMaterial;
+        if (playerName.Contains("m"))
+        {
+            line.startWidth = 0.01f;
+            line.endWidth = 0.01f;
+        }
+        else
+        {
+            line.startWidth = 0.5f;
+            line.endWidth = 0.5f;
+        }
+        line.SetPositions(positions);
+    }
+    public static void lineDraw(String playerName, int farFuture, float futureDetails, Vector3[] positions)
+    {
+        LineRenderer line = GameObject.Find(playerName).GetComponent<LineRenderer>();
+        line.positionCount = farFuture;
+        Material lineMaterial = Resources.Load<Material>("Material/Arrow");
+        lineMaterial.mainTextureScale = new Vector2(farFuture * futureDetails, 1);
 
         line.material = lineMaterial;
         if (playerName.Contains("m"))

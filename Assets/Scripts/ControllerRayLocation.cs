@@ -64,7 +64,7 @@ public class ControllerRayLocation : MonoBehaviour
             RaycastHit hit;
             // if (Physics.Raycast(controllerPosition, controllerRotation * Vector3.forward, out hit))
             // if (Physics.Raycast(rayOrigin, rayRotation * Vector3.forward, out hit))
-            if (OVRInput.IsControllerConnected(controllerType))
+            if (OVRInput.IsControllerConnected(controllerType) && OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
             {
                 // Check if the raycast hit the cube object
 
@@ -76,8 +76,9 @@ public class ControllerRayLocation : MonoBehaviour
                 // Use the cursor location as needed
                 // print("Game Object Hit: " + hit.collider.gameObject);
                 // Debug.Log("Cursor Location: " + cursorLocation);
-                Debug.Log("Cursor Location: " + GameObject.Find("MovableMiniature").transform.InverseTransformPoint(GameObject.Find("FootballEngine").transform.TransformPoint(GameObject.Find("RaycasterCursorVisual").transform.position)));
 
+                // Debug.Log("Cursor Location: " + GameObject.Find("MovableMiniature").transform.InverseTransformPoint(GameObject.Find("FootballEngine").transform.TransformPoint(GameObject.Find("RaycasterCursorVisual").transform.position)));
+                Debug.Log("Cursor Location: " + GameObject.Find("FootballEngine").transform.TransformPoint(GameObject.Find("RaycasterCursorVisual").transform.position));
 
             }
         }
