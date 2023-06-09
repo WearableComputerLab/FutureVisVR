@@ -203,16 +203,16 @@ public class MultiFuture : MonoBehaviour
                 for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
                 // for (int eachFutureNumber = 1; eachFutureNumber <= MovableFootball.multiFutureAmount; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
                 {
-                    visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-                    visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-                    visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-                    visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                    // visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                    // visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                    // visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                    // visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
                 }
             }
         }
     }
 
-    public static void updateFutureAmountFar(int currentStep, int farFuture, float futureDetails, bool futureVisShow)
+    public static void updateFutureFar(int currentStep, int farFuture, float futureDetails)
     {
         int futureNo = 0;
         int playerNumber = 0;
@@ -258,6 +258,10 @@ public class MultiFuture : MonoBehaviour
                 }
             }
         }
+    }
+
+    public static void updateFutureAmount(bool futureVisShow)
+    {
         String rRightPlayer = "RightPlayer";
         String mRightPlayer = "m" + rRightPlayer;
         String rLeftPlayer = "LeftPlayer";
@@ -387,9 +391,20 @@ public class MultiFuture : MonoBehaviour
     public static void lineDraw(String playerName, int farFuture, float futureDetails, Vector3[] positions)
     {
         LineRenderer line = GameObject.Find(playerName).GetComponent<LineRenderer>();
+
+        List<Vector3> detailedPositions = new List<Vector3>();
+
+
+        foreach (int pointIndex in Enumerable.Range(0, (int)Math.Round(positions.Length * futureDetails - 1)))
+            detailedPositions.Add(positions[pointIndex]);
+
+        detailedPositions.Add(positions[positions.Length - 1]);
+
+
+
         line.positionCount = farFuture;
         Material lineMaterial = Resources.Load<Material>("Material/Arrow");
-        lineMaterial.mainTextureScale = new Vector2(farFuture * futureDetails, 1);
+        lineMaterial.mainTextureScale = new Vector2(farFuture / 2, 1);
 
         line.material = lineMaterial;
         if (playerName.Contains("m"))
@@ -402,7 +417,7 @@ public class MultiFuture : MonoBehaviour
             line.startWidth = 0.5f;
             line.endWidth = 0.5f;
         }
-        line.SetPositions(positions);
+        line.SetPositions(detailedPositions.ToArray());
     }
 
 

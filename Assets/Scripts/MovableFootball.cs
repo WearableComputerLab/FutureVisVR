@@ -54,8 +54,8 @@ public class MovableFootball : MonoBehaviour
     public static int gameDuration;
 
     /*** Step Number ***/
-    [Range(0, 500)]
-    public int StepNum = 0;
+    // [Range(0, 500)]
+    public static int StepNum = 0;
 
     /*** Each Team Players Number ***/
     public int EachPlayerNumber = 6;
@@ -76,7 +76,7 @@ public class MovableFootball : MonoBehaviour
     public int FarFuture = 5;
     public static int multiFutureFar;
 
-    [Range(0, 1)]
+    [Range(0.1f, 1)]
     public float FutureDetails = 0.5f;
     public int futureAmount = 2;
     public static int multiFutureAmount;
@@ -225,7 +225,8 @@ public class MovableFootball : MonoBehaviour
     {
         multiFutureFar = FarFuture;
         multiFutureAmount = futureAmount;
-        MultiFuture.updateFutureAmountFar(StepNum, FarFuture, FutureDetails, showFuture);
+        MultiFuture.updateFutureFar(StepNum, FarFuture, FutureDetails);
+        MultiFuture.updateFutureAmount(showFuture);
         /*** Movable Miniature***/
         // GameObject.Find("MovableMiniature").transform.position = new Vector3(mainCameraObject.transform.position.x, 0, mainCameraObject.transform.position.z + 0.2f);
         // GameUserInterface.updateGUIView();
