@@ -48,11 +48,11 @@ public class UserStudyInterface : MonoBehaviour
     // private int[][] currentSituations = new int[][];
     private List<List<int>> currentSituations = new List<List<int>>();
     private List<List<int>> No_Time_Limit_2_Arrows_Situations = new List<List<int>>();
-    private List<List<int>> No_Time_Limit_5_Arrows_Situations;
-    private List<List<int>> No_Time_Limit_Heatmap_Situations;
-    private List<List<int>> Yes_Time_Limit_2_Arrows_Situations;
-    private List<List<int>> Yes_Time_Limit_5_Arrows_Situations;
-    private List<List<int>> Yes_Time_Limit_Heatmap_Situations;
+    private List<List<int>> No_Time_Limit_5_Arrows_Situations = new List<List<int>>();
+    private List<List<int>> No_Time_Limit_Heatmap_Situations = new List<List<int>>();
+    private List<List<int>> Yes_Time_Limit_2_Arrows_Situations = new List<List<int>>();
+    private List<List<int>> Yes_Time_Limit_5_Arrows_Situations = new List<List<int>>();
+    private List<List<int>> Yes_Time_Limit_Heatmap_Situations = new List<List<int>>();
 
 
     private int situationNumber;
@@ -67,7 +67,7 @@ public class UserStudyInterface : MonoBehaviour
 
     /*** Countdown Timer ***/
     private bool TimeLimit;
-    private float totalTime = 10f;
+    private float totalTime = 5f;
 
     private void Start()
     {
@@ -86,12 +86,31 @@ public class UserStudyInterface : MonoBehaviour
         No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 1, 6, 60 });
         No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 12, 5, 234 });
         No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 10, 1, 108 });
-        No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 2, 18, 142 });
+        No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 2, 18, 144 });
         No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 16, 2, 213 });
         No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 8, 7, 150 });
 
+        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 15, 11, 0 });
+        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 20, 13, 489 });
+        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 7, 10, 384 });
+        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 3, 16, 12 });
+        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 1, 6, 60 });
+        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 12, 5, 234 });
+        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 10, 1, 108 });
+        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 2, 18, 144 });
+        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 16, 2, 213 });
+        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 8, 7, 150 });
 
-
+        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 15, 11, 0 });
+        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 20, 13, 489 });
+        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 7, 10, 384 });
+        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 3, 16, 12 });
+        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 1, 6, 60 });
+        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 12, 5, 234 });
+        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 10, 1, 108 });
+        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 2, 18, 144 });
+        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 16, 2, 213 });
+        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 8, 7, 150 });
 
         /*** Select Scenario from Unity Inspector ***/
         switch (scenario)
@@ -343,7 +362,7 @@ public class UserStudyInterface : MonoBehaviour
         }
 
 
-        if (OVRInput.IsControllerConnected(controllerType) && OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))
+        if ((OVRInput.IsControllerConnected(controllerType) && OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger)) || Input.GetMouseButtonDown(1))
         {
             triggerHasBeenPressed = true;
             // TO-DO Get and store cursor world positions
@@ -351,7 +370,7 @@ public class UserStudyInterface : MonoBehaviour
         }
         else
         {
-            if (triggerHasBeenPressed)
+            if (triggerHasBeenPressed && (showHeatmap || ShowArrow))
             {
                 // TO-DO check if trigger has been pressed, if yes, calculate average, store, jump to another situation
 
@@ -373,6 +392,7 @@ public class UserStudyInterface : MonoBehaviour
                 try
                 {
                     setSituation(currentSituations[situationNumber]);
+                    startTimer = false;
                     showHeatmap = false;
                     ShowArrow = false;
                 }
@@ -382,12 +402,12 @@ public class UserStudyInterface : MonoBehaviour
                 }
             }
 
-            if (OVRInput.IsControllerConnected(controllerType) && OVRInput.Get(OVRInput.Button.One))  // TO-DO check if A has been pressed, if yes, show future, hide "Press A to show future" hint.
+            if ((OVRInput.IsControllerConnected(controllerType) && OVRInput.Get(OVRInput.Button.One)) || Input.GetMouseButtonDown(0))  // TO-DO check if A has been pressed, if yes, show future, hide "Press A to show future" hint.
             {
                 print("BUTTON ONE HAS BEEN PRESSED");
                 showHintPressA = false;
                 startTimer = true;
-                if (temp_scenarioName.Contains("Heatmaps"))
+                if (temp_scenarioName.Contains("Heatmap"))
                 {
                     showHeatmap = true;
                 }
@@ -404,6 +424,7 @@ public class UserStudyInterface : MonoBehaviour
         {
             if (TimeLimit)
             {
+                print("Timer: " + timer);
                 timer -= Time.deltaTime;
 
                 if (timer <= 0.01f)
@@ -419,10 +440,11 @@ public class UserStudyInterface : MonoBehaviour
                     try
                     {
                         setSituation(currentSituations[situationNumber]);
+                        startTimer = false;
                         showHeatmap = false;
                         ShowArrow = false;
                     }
-                    catch (IndexOutOfRangeException)
+                    catch (ArgumentOutOfRangeException)
                     {
                         StopPlayMode();
                     }
@@ -431,10 +453,13 @@ public class UserStudyInterface : MonoBehaviour
             else
                 timer += Time.deltaTime;
         }
-        else
-        {
-            timer = 0;
-        }
+        // else
+        // {
+        //     if (TimeLimit)
+        //         timer = totalTime;
+        //     else
+        //         timer = 0;
+        // }
     }
 
 
