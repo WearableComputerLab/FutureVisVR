@@ -72,13 +72,7 @@ public class UserStudyInterface : MonoBehaviour
     private void Start()
     {
         /*** Step Num of Situations in Original Game ***/  // [Observer, Highlighted, Step_number], blue(right) player:1-10, red(left) player:11-20
-        // No_Time_Limit_2_Arrows_Situations = new int[][] { new int[]{ 15, 4, 0 }, new int[]{ 20, 13, 489 }, new int[]{ 7, 10, 384 }, new int[]{ 3, 16, 12 },
-        //                     new int[]{ 1, 6, 60 }, new int[]{ 12, 5, 234 }, new int[]{ 10, 1, 108 }, new int[]{ 2, 18, 142 }, new int[]{ 16, 2, 213 }, new int[]{ 8, 7, 150 } };
-        // //  No_Time_Limit_5_Arrows = new int[];
-        //  No_Time_Limit_Heatmap = new int[];
-        //  Time_Limit_2_Arrows = new int[];
-        //  Time_Limit_5_Arrows = new int[];
-        //  Time_Limit_Heatmap = new int[];
+
         No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 15, 11, 0 });
         No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 20, 13, 489 });
         No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 7, 10, 384 });
@@ -489,17 +483,17 @@ public class UserStudyInterface : MonoBehaviour
         int stepNumber;
 
         if (situation[0] > 10)
-            observer = "LeftPlayer" + (situation[0] % 10).ToString();
+            observer = "LeftPlayer" + (situation[0] - 10).ToString();
         else
             observer = "RightPlayer" + situation[0].ToString();
         if (situation[1] > 10)
-            highlightedPlayer = "LeftPlayer" + (situation[1] % 10).ToString();
+            highlightedPlayer = "LeftPlayer" + (situation[1] - 10).ToString();
         else
             highlightedPlayer = "RightPlayer" + situation[1].ToString();
 
         stepNumber = situation[2];
 
-        MovableFootball.StepNum = stepNumber;
+        MovableFootball.step_num = stepNumber;
         GoldHaloEffect.createHightedPlayer(highlightedPlayer);
         GameObject.Find("OVRCameraRig").transform.position = new Vector3(GameObject.Find(observer).transform.position.x, 0, GameObject.Find(observer).transform.position.z);
         GameObject.Find("OVRCameraRig").transform.rotation = GameObject.Find(observer).transform.rotation;
@@ -512,7 +506,7 @@ public class UserStudyInterface : MonoBehaviour
         Vector3 sum = Vector3.zero;
         int index = 0;
         int length = values.ToArray().Length;
-        for (int i = length - 1; i > length / 3; --i)
+        for (int i = 0; i < length / 3; i++)
         {
             index++;
             sum += values[i];

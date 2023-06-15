@@ -409,13 +409,13 @@ public class MultiFuture : MonoBehaviour
         line.material = lineMaterial;
         if (playerName.Contains("m"))
         {
-            line.startWidth = 0.01f;
-            line.endWidth = 0.01f;
+            line.startWidth = 0.008f;
+            line.endWidth = 0.008f;
         }
         else
         {
-            line.startWidth = 0.5f;
-            line.endWidth = 0.5f;
+            line.startWidth = 0.4f;
+            line.endWidth = 0.4f;
         }
         line.SetPositions(detailedPositions.ToArray());
     }

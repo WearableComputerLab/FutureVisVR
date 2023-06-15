@@ -86,87 +86,141 @@ public class HeatmapGenerator : MonoBehaviour
 
     public static void updateHeatmap(float saturationAdjustment, float valueAdjustment, float transparentAdjustment, Gradient gradient, bool showHeatmap)
     {
-        if (showHeatmap)
-        {        // Find the minimum and maximum intensity values in the heatmap
-            float minIntensity = Mathf.Infinity;
-            float maxIntensity = -Mathf.Infinity;
-            for (int i = 0; i < heatmapResolution; i++)
-            {
-                for (int j = 0; j < heatmapResolution; j++)
-                {
-                    float intensity = heatmap[i, j];
-                    if (intensity < minIntensity)
-                    {
-                        minIntensity = intensity;
-                    }
-                    if (intensity > maxIntensity)
-                    {
-                        maxIntensity = intensity;
-                    }
-                }
-            }
-
-            // Display the heatmap
-            Texture2D texture = new Texture2D(heatmapResolution, heatmapResolution);
-            for (int i = 0; i < heatmapResolution; i++)
-            {
-                for (int j = 0; j < heatmapResolution; j++)
-                {
-                    float intensity = heatmap[i, j];
-                    float normalizedIntensity = (intensity - minIntensity) / (maxIntensity - minIntensity); // Normalize intensity to [0, 1]
-
-                    //if (intensity > 0)
-                    {
-                        Color color = gradient.Evaluate(normalizedIntensity);// Color.Lerp(lowIntensityColor, highIntensityColor, normalizedIntensity);
-                                                                             // print("Color: " + color);
-                                                                             //Color.RGBToHSV(color, out float h, out float s, out float v);
-                                                                             //s += saturationAdjustment;
-                                                                             //v += valueAdjustment;
-
-                        //s = Mathf.Clamp01(s);
-                        //v = Mathf.Clamp01(v);
-                        //Color newColor = Color.HSVToRGB(h, s, v);
-                        //newColor.a = transparentAdjustment;
-                        var newColor = color;
-                        texture.SetPixel(i, j, newColor);
-                    }
-                    //else
-                    {
-                        //  Color color = new Color(normalizedIntensity, normalizedIntensity, normalizedIntensity, 1f);
-                        //texture.SetPixel(i, j, color);
-                    }
-                }
-            }
-
-            texture.Apply();
-
-            GameObject heatmapObject = GameObject.Find("HeatmapPlane");
-
-            Material originalSoccerFieldMaterial = Resources.Load<Material>("Material/soccerFieldHeatmap");
-
-            Material heatmapMaterial = new Material(originalSoccerFieldMaterial);
-            heatmapMaterial.SetTexture("_MainTex", texture);
-
-            heatmapObject.GetComponent<Renderer>().material = heatmapMaterial;
-
-
-            GameObject miniatureHeatmapObject = GameObject.Find("MiniatureHeatmapPlane");
-            Material miniatureHeatmapMaterial = new Material(originalSoccerFieldMaterial);
-            miniatureHeatmapMaterial.SetTexture("_MainTex", texture);
-
-            miniatureHeatmapObject.GetComponent<Renderer>().material = heatmapMaterial;
-        }
-        else if (!showHeatmap)
+        // if (showHeatmap)
+        // {        // Find the minimum and maximum intensity values in the heatmap
+        float minIntensity = Mathf.Infinity;
+        float maxIntensity = -Mathf.Infinity;
+        for (int i = 0; i < heatmapResolution; i++)
         {
-            GameObject heatmapObject = GameObject.Find("HeatmapPlane");
-            GameObject miniatureHeatmapObject = GameObject.Find("MiniatureHeatmapPlane");
-
-            Material originalSoccerFieldMaterial = Resources.Load<Material>("Material/soccerFieldHeatmap");
-            Material heatmapMaterial = new Material(originalSoccerFieldMaterial);
-
-            heatmapObject.GetComponent<Renderer>().material = heatmapMaterial;
-            miniatureHeatmapObject.GetComponent<Renderer>().material = heatmapMaterial;
+            for (int j = 0; j < heatmapResolution; j++)
+            {
+                float intensity = heatmap[i, j];
+                if (intensity < minIntensity)
+                {
+                    minIntensity = intensity;
+                }
+                if (intensity > maxIntensity)
+                {
+                    maxIntensity = intensity;
+                }
+            }
         }
-    }
 
+        // Display the heatmap
+        Texture2D texture = new Texture2D(heatmapResolution, heatmapResolution);
+        for (int i = 0; i < heatmapResolution; i++)
+        {
+            for (int j = 0; j < heatmapResolution; j++)
+            {
+                float intensity = heatmap[i, j];
+                float normalizedIntensity = (intensity - minIntensity) / (maxIntensity - minIntensity); // Normalize intensity to [0, 1]
+
+                //if (intensity > 0)
+                {
+                    Color color;
+                    if (showHeatmap)
+
+                        color = gradient.Evaluate(normalizedIntensity);// Color.Lerp(lowIntensityColor, highIntensityColor, normalizedIntensity);
+                    else
+                        color = gradient.Evaluate(0);
+                    // Color.Lerp(lowIntensityColor, highIntensityColor, normalizedIntensity);
+                    // print("Color: " + color);
+                    //Color.RGBToHSV(color, out float h, out float s, out float v);
+                    //s += saturationAdjustment;
+                    //v += valueAdjustment;
+
+                    //s = Mathf.Clamp01(s);
+                    //v = Mathf.Clamp01(v);
+                    //Color newColor = Color.HSVToRGB(h, s, v);
+                    //newColor.a = transparentAdjustment;
+                    var newColor = color;
+                    texture.SetPixel(i, j, newColor);
+                }
+                //else
+                {
+                    //  Color color = new Color(normalizedIntensity, normalizedIntensity, normalizedIntensity, 1f);
+                    //texture.SetPixel(i, j, color);
+                }
+            }
+        }
+
+        texture.Apply();
+
+        GameObject heatmapObject = GameObject.Find("HeatmapPlane");
+
+        Material originalSoccerFieldMaterial = Resources.Load<Material>("Material/soccerFieldHeatmap");
+
+        Material heatmapMaterial = new Material(originalSoccerFieldMaterial);
+        heatmapMaterial.SetTexture("_MainTex", texture);
+
+        heatmapObject.GetComponent<Renderer>().material = heatmapMaterial;
+
+
+        GameObject miniatureHeatmapObject = GameObject.Find("MiniatureHeatmapPlane");
+        Material miniatureHeatmapMaterial = new Material(originalSoccerFieldMaterial);
+        miniatureHeatmapMaterial.SetTexture("_MainTex", texture);
+
+        miniatureHeatmapObject.GetComponent<Renderer>().material = heatmapMaterial;
+        // }
+        // else if (!showHeatmap)
+        // {
+        //     Texture2D texture = new Texture2D(heatmapResolution, heatmapResolution);
+        //     for (int i = 0; i < heatmapResolution; i++)
+        //     {
+        //         for (int j = 0; j < heatmapResolution; j++)
+        //         {
+        //             float intensity = heatmap[i, j];
+        //             // float normalizedIntensity = (intensity - minIntensity) / (maxIntensity - minIntensity); // Normalize intensity to [0, 1]
+
+        //             //if (intensity > 0)
+        //             {
+        //                 Color color = gradient.Evaluate(0);// Color.Lerp(lowIntensityColor, highIntensityColor, normalizedIntensity);
+        //                                                    // print("Color: " + color);
+        //                                                    //Color.RGBToHSV(color, out float h, out float s, out float v);
+        //                                                    //s += saturationAdjustment;
+        //                                                    //v += valueAdjustment;
+
+        //                 //s = Mathf.Clamp01(s);
+        //                 //v = Mathf.Clamp01(v);
+        //                 //Color newColor = Color.HSVToRGB(h, s, v);
+        //                 //newColor.a = transparentAdjustment;
+        //                 var newColor = color;
+        //                 texture.SetPixel(i, j, newColor);
+        //             }
+        //             //else
+        //             {
+        //                 //  Color color = new Color(normalizedIntensity, normalizedIntensity, normalizedIntensity, 1f);
+        //                 //texture.SetPixel(i, j, color);
+        //             }
+        //         }
+        //     }
+        //     texture.Apply();
+
+        //     GameObject heatmapObject = GameObject.Find("HeatmapPlane");
+
+        //     Material originalSoccerFieldMaterial = Resources.Load<Material>("Material/soccerFieldHeatmap");
+
+        //     Material heatmapMaterial = new Material(originalSoccerFieldMaterial);
+        //     heatmapMaterial.SetTexture("_MainTex", texture);
+
+        //     heatmapObject.GetComponent<Renderer>().material = heatmapMaterial;
+
+
+        //     GameObject miniatureHeatmapObject = GameObject.Find("MiniatureHeatmapPlane");
+        //     Material miniatureHeatmapMaterial = new Material(originalSoccerFieldMaterial);
+        //     miniatureHeatmapMaterial.SetTexture("_MainTex", texture);
+
+        //     miniatureHeatmapObject.GetComponent<Renderer>().material = heatmapMaterial;
+
+        //     // GameObject heatmapObject = GameObject.Find("HeatmapPlane");
+        //     // GameObject miniatureHeatmapObject = GameObject.Find("MiniatureHeatmapPlane");
+
+        //     // Material originalSoccerFieldMaterial = Resources.Load<Material>("Material/soccerFieldHeatmap");
+        //     // Material heatmapMaterial = new Material(originalSoccerFieldMaterial);
+
+        //     // heatmapObject.GetComponent<Renderer>().material = heatmapMaterial;
+        //     // miniatureHeatmapObject.GetComponent<Renderer>().material = heatmapMaterial;
+    }
 }
+
+

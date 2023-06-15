@@ -55,7 +55,9 @@ public class MovableFootball : MonoBehaviour
 
     /*** Step Number ***/
     // [Range(0, 500)]
-    public static int StepNum = 0;
+    public int StepNum = 0;
+    public bool controlStepNum = false;
+    public static int step_num;
 
     /*** Each Team Players Number ***/
     public int EachPlayerNumber = 6;
@@ -223,6 +225,9 @@ public class MovableFootball : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!controlStepNum)
+            StepNum = step_num;
+
         multiFutureFar = FarFuture;
         multiFutureAmount = futureAmount;
         MultiFuture.updateFutureFar(StepNum, FarFuture, FutureDetails);
