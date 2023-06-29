@@ -40,10 +40,11 @@ public class HeatmapGenerator : MonoBehaviour
         heatmap = new float[heatmapResolution, heatmapResolution];
 
 
-        Vector2 playingAreaSize = new Vector2(105f, 68f);
+        Vector2 playingAreaSize;
         if (heatmapType.Equals("Miniature"))
             playingAreaSize = new Vector2(0.525f, 0.34f);
-
+        else
+            playingAreaSize = new Vector2(105f, 68f);
         // Compute the cell size and create an empty heatmap
         float cellSizeX = playingAreaSize.x / heatmapResolution;
         float cellSizeY = playingAreaSize.y / heatmapResolution;

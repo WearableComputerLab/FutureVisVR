@@ -6,12 +6,12 @@ public class GoldHaloEffect : MonoBehaviour
 {
     // public static string HighlightedGamePlayer;
 
-    public static void createHightedPlayer(string HighlightedGamePlayer)
+    public static void createHighlightedPlayer(string HighlightedGamePlayer)
     {
         if (GameObject.Find("Halo") != null)
         {
             GameObject.Find("Halo").transform.parent.gameObject.transform.localScale = new Vector3(1f, 2f, 1f);
-            GameObject.Find("mHalo").transform.parent.gameObject.transform.localScale = new Vector3(0.01f, 0.02f, 0.01f);
+            GameObject.Find("mHalo").transform.parent.gameObject.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
             Destroy(GameObject.Find("Halo"));
             Destroy(GameObject.Find("mHalo"));
         }
@@ -53,7 +53,7 @@ public class GoldHaloEffect : MonoBehaviour
             Destroy(temp_capsule);
             haloObject.AddComponent<MeshFilter>().mesh = capsuleMesh;
             haloObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-            haloObject.transform.localScale = new Vector3(100f, 200f, 100f);
+            haloObject.transform.localScale = new Vector3(100f, 250f, 100f);
             haloObject.transform.localPosition = new Vector3(0, 0.5f, 0);
             mHaloObject.AddComponent<MeshRenderer>().material = Resources.Load<Material>("Material/Highlight");
             GameObject mTemp_capsule = GameObject.CreatePrimitive(PrimitiveType.Capsule);
@@ -67,5 +67,36 @@ public class GoldHaloEffect : MonoBehaviour
             player.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
             mPlayer.transform.localScale = new Vector3(0.0001f, 0.0001f, 0.0001f);
         }
+    }
+
+    public static void createHighlightedObserver(string observer)
+    {
+        GameObject mPlayer = GameObject.Find("m" + observer);
+
+        if (GameObject.Find("mObserver") != null)
+        {
+            Destroy(GameObject.Find("mObserver"));
+        }
+
+        GameObject mObserver = new GameObject("mObserver");
+        mObserver.transform.parent = mPlayer.transform;
+        mObserver.transform.localPosition = new Vector3(mPlayer.transform.localPosition.x, 0.4f, mPlayer.transform.localPosition.z);
+        Light mObserverLight = mObserver.AddComponent<Light>();
+        mObserverLight.type = LightType.Point;
+        mObserverLight.range = 0.01f;
+        mObserverLight.intensity = 300;
+        mObserverLight.color = new Color(255, 212, 0, 255);
+        mObserverLight.renderMode = LightRenderMode.ForcePixel;
+
+    }
+
+    public static void hideObserverPlayerObject(string observer)
+    {
+        for (int i = 0; i < 11; i++)
+        {
+            GameObject.Find("RightPlayer" + i).transform.localScale = new Vector3(1f, 2f, 1f); ;
+            GameObject.Find("LeftPlayer" + i).transform.localScale = new Vector3(1f, 2f, 1f); ;
+        }
+        GameObject.Find(observer).transform.localScale = new Vector3(0.001f, 0.002f, 0.001f); ;
     }
 }

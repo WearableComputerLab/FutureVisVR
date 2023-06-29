@@ -37,28 +37,29 @@ public class UserStudyInterface : MonoBehaviour
     private List<Vector3> CursorWorldPositions;
     private bool triggerHasBeenPressed;
 
-    public enum Scenario
+    public enum Conditions
     {
         None,
         No_Time_Limit_2_Arrows, No_Time_Limit_5_Arrows, No_Time_Limit_Heatmap, Yes_Time_Limit_2_Arrows, Yes_Time_Limit_5_Arrows, Yes_Time_Limit_Heatmap
     }
 
-    public Scenario scenario;
-    private string scenarioName;
+    public Conditions condition;
+    private string conditionName;
     // private int[][] currentSituations = new int[][];
     private List<List<int>> currentSituations = new List<List<int>>();
-    private List<List<int>> No_Time_Limit_2_Arrows_Situations = new List<List<int>>();
-    private List<List<int>> No_Time_Limit_5_Arrows_Situations = new List<List<int>>();
-    private List<List<int>> No_Time_Limit_Heatmap_Situations = new List<List<int>>();
-    private List<List<int>> Yes_Time_Limit_2_Arrows_Situations = new List<List<int>>();
-    private List<List<int>> Yes_Time_Limit_5_Arrows_Situations = new List<List<int>>();
-    private List<List<int>> Yes_Time_Limit_Heatmap_Situations = new List<List<int>>();
+    private List<List<int>> No_Time_Limit_2_Arrows_Trials = new List<List<int>>();
+    private List<List<int>> No_Time_Limit_5_Arrows_Trials = new List<List<int>>();
+    private List<List<int>> No_Time_Limit_Heatmap_Trials = new List<List<int>>();
+    private List<List<int>> Yes_Time_Limit_2_Arrows_Trials = new List<List<int>>();
+    private List<List<int>> Yes_Time_Limit_5_Arrows_Trials = new List<List<int>>();
+    private List<List<int>> Yes_Time_Limit_Heatmap_Trials = new List<List<int>>();
 
 
     private int situationNumber;
     string temp_scenarioName;
+    private string current_observer;
 
-    private bool showHintPressA;
+    private bool buttonAHasBeenPressed;
     private GUIStyle PressAGUIStyle;
 
     /*** Count Completion Time***/
@@ -69,128 +70,152 @@ public class UserStudyInterface : MonoBehaviour
     private bool TimeLimit;
     private float totalTime = 5f;
 
+    /*** Start Experiment***/
+    public static bool startCondition;
+
+    /*** Eye Tracking***/
+    public static bool startEyeTracking;
+    private float eyeTimer;
+
     private void Start()
     {
         /*** Step Num of Situations in Original Game ***/  // [Observer, Highlighted, Step_number], blue(right) player:1-10, red(left) player:11-20
+        Dataset.startDataset();
+        No_Time_Limit_2_Arrows_Trials = Dataset.No_Time_Limit_2_Arrows_Trials;
+        No_Time_Limit_5_Arrows_Trials = Dataset.No_Time_Limit_5_Arrows_Trials;
+        No_Time_Limit_Heatmap_Trials = Dataset.No_Time_Limit_Heatmap_Trials;
+        Yes_Time_Limit_2_Arrows_Trials = Dataset.Yes_Time_Limit_2_Arrows_Trials;
+        Yes_Time_Limit_5_Arrows_Trials = Dataset.Yes_Time_Limit_5_Arrows_Trials;
+        Yes_Time_Limit_Heatmap_Trials = Dataset.Yes_Time_Limit_Heatmap_Trials;
 
-        No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 15, 11, 0 });
-        No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 20, 13, 489 });
-        No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 7, 10, 384 });
-        No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 3, 16, 12 });
-        No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 1, 6, 60 });
-        No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 12, 5, 234 });
-        No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 10, 1, 108 });
-        No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 2, 18, 144 });
-        No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 16, 2, 213 });
-        No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 8, 7, 150 });
+        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 15, 11, 0 });
+        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 20, 13, 489 });
+        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 7, 10, 384 });
+        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 3, 16, 12 });
+        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 1, 6, 60 });
+        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 12, 5, 234 });
+        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 10, 1, 108 });
+        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 2, 18, 144 });
+        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 16, 2, 213 });
+        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 8, 7, 150 });
 
-        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 15, 11, 0 });
-        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 20, 13, 489 });
-        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 7, 10, 384 });
-        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 3, 16, 12 });
-        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 1, 6, 60 });
-        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 12, 5, 234 });
-        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 10, 1, 108 });
-        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 2, 18, 144 });
-        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 16, 2, 213 });
-        Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 8, 7, 150 });
+        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 15, 11, 0 });
+        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 20, 13, 489 });
+        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 7, 10, 384 });
+        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 3, 16, 12 });
+        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 1, 6, 60 });
+        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 12, 5, 234 });
+        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 10, 1, 108 });
+        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 2, 18, 144 });
+        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 16, 2, 213 });
+        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 8, 7, 150 });
 
-        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 15, 11, 0 });
-        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 20, 13, 489 });
-        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 7, 10, 384 });
-        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 3, 16, 12 });
-        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 1, 6, 60 });
-        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 12, 5, 234 });
-        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 10, 1, 108 });
-        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 2, 18, 144 });
-        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 16, 2, 213 });
-        Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 8, 7, 150 });
+        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 15, 11, 0 });
+        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 20, 13, 489 });
+        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 7, 10, 384 });
+        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 3, 16, 12 });
+        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 1, 6, 60 });
+        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 12, 5, 234 });
+        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 10, 1, 108 });
+        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 2, 18, 144 });
+        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 16, 2, 213 });
+        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 8, 7, 150 });
 
         /*** Select Scenario from Unity Inspector ***/
-        switch (scenario)
+        switch (condition)
         {
-            case Scenario.None:
+            case Conditions.None:
                 // TO-DO Hide Players
+                startCondition = false;
                 break;
-            case Scenario.No_Time_Limit_2_Arrows:
+            case Conditions.No_Time_Limit_2_Arrows:
                 // parseScenarioName("No_Time_Limit_2_Arrows");
-                scenarioName = "No_Time_Limit_2Arrows";
-                currentSituations = No_Time_Limit_2_Arrows_Situations;
+                conditionName = "No_Time_Limit_2Arrows";
+                Dataset.shuffleDataset(No_Time_Limit_2_Arrows_Trials);
+                currentSituations = No_Time_Limit_2_Arrows_Trials;  // Trials = Situations
+                startCondition = true;
                 break;
-            case Scenario.No_Time_Limit_5_Arrows:
+            case Conditions.No_Time_Limit_5_Arrows:
                 // parseScenarioName("No_Time_Limit_5_Arrows");
-                scenarioName = "No_Time_Limit_5Arrows";
-                currentSituations = No_Time_Limit_5_Arrows_Situations;
+                conditionName = "No_Time_Limit_5Arrows";
+                Dataset.shuffleDataset(No_Time_Limit_5_Arrows_Trials);
+                currentSituations = No_Time_Limit_5_Arrows_Trials;
+                startCondition = true;
                 break;
-            case Scenario.No_Time_Limit_Heatmap:
+            case Conditions.No_Time_Limit_Heatmap:
                 // parseScenarioName("No_Time_Limit_Heatmap");
-                scenarioName = "No_Time_Limit_Heatmap";
-                currentSituations = No_Time_Limit_Heatmap_Situations;
+                conditionName = "No_Time_Limit_Heatmap";
+                Dataset.shuffleDataset(No_Time_Limit_Heatmap_Trials);
+                currentSituations = No_Time_Limit_Heatmap_Trials;
+                startCondition = true;
                 break;
-            case Scenario.Yes_Time_Limit_2_Arrows:
+            case Conditions.Yes_Time_Limit_2_Arrows:
                 // parseScenarioName("Yes_Time_Limit_2_Arrows");
-                scenarioName = "Yes_Time_Limit_2Arrows";
-                currentSituations = Yes_Time_Limit_2_Arrows_Situations;
+                conditionName = "Yes_Time_Limit_2Arrows";
+                Dataset.shuffleDataset(Yes_Time_Limit_2_Arrows_Trials);
+                currentSituations = Yes_Time_Limit_2_Arrows_Trials;
+                startCondition = true;
                 break;
-            case Scenario.Yes_Time_Limit_5_Arrows:
+            case Conditions.Yes_Time_Limit_5_Arrows:
                 // parseScenarioName("Yes_Time_Limit_5_Arrows");
-                scenarioName = "Yes_Time_Limit_5Arrows";
-                currentSituations = Yes_Time_Limit_5_Arrows_Situations;
+                conditionName = "Yes_Time_Limit_5Arrows";
+                Dataset.shuffleDataset(Yes_Time_Limit_5_Arrows_Trials);
+                currentSituations = Yes_Time_Limit_5_Arrows_Trials;
+                startCondition = true;
                 break;
-            case Scenario.Yes_Time_Limit_Heatmap:
+            case Conditions.Yes_Time_Limit_Heatmap:
                 // parseScenarioName("Yes_Time_Limit_Heatmap");
-                scenarioName = "Yes_Time_Limit_Heatmap";
-                currentSituations = Yes_Time_Limit_Heatmap_Situations;
+                conditionName = "Yes_Time_Limit_Heatmap";
+                Dataset.shuffleDataset(Yes_Time_Limit_Heatmap_Trials);
+                currentSituations = Yes_Time_Limit_Heatmap_Trials;
+                startCondition = true;
                 break;
         }
 
-        /*** Parse Scenario Name ***/
-        int underscoreIndex = scenarioName.IndexOf("_");
-        if (underscoreIndex != -1)
+
+        if (startCondition)
         {
-            if (scenarioName.Substring(0, underscoreIndex) == "No")
+            /*** Parse Scenario Name ***/
+            int underscoreIndex = conditionName.IndexOf("_");
+            if (underscoreIndex != -1)
             {
-                TimeLimit = false;
-                timer = 0;
+                if (conditionName.Substring(0, underscoreIndex) == "No")
+                {
+                    TimeLimit = false;
+                    timer = 0;
+                }
+                else if (conditionName.Substring(0, underscoreIndex) == "Yes")
+                {
+                    TimeLimit = true;
+                    timer = totalTime;
+                }
             }
-            else if (scenarioName.Substring(0, underscoreIndex) == "Yes")
+            temp_scenarioName = conditionName;
+            int temp_underscoreIndex = temp_scenarioName.IndexOf("_");
+            while (temp_underscoreIndex != -1)
             {
-                TimeLimit = true;
-                timer = totalTime;
+                temp_scenarioName = temp_scenarioName.Remove(0, temp_underscoreIndex + 1);
+                temp_underscoreIndex = temp_scenarioName.IndexOf("_");
             }
+
+            /*** Ray & miniMap***/
+            miniMapObject = GameObject.Find("MovableMiniature").transform;
+            controllerType = OVRInput.Controller.RTouch;
+
+            RaycasterCursorVisual = GameObject.Find("RaycasterCursorVisual");
+            CursorWorldPositions = new List<Vector3>();
+
+
+            /*** Setup experiment parameters before running ***/
+            // previous_observer = currentSituations[0][0];
+            eyeTimer = 0;
+            triggerHasBeenPressed = false;
+            startTimer = false;
+            situationNumber = 0;
+            current_observer = setSituation(currentSituations[situationNumber]);
+            showHeatmap = false;
+            ShowArrow = false;
         }
-        temp_scenarioName = scenarioName;
-        int temp_underscoreIndex = temp_scenarioName.IndexOf("_");
-        while (temp_underscoreIndex != -1)
-        {
-            temp_scenarioName = temp_scenarioName.Remove(0, temp_underscoreIndex + 1);
-            temp_underscoreIndex = temp_scenarioName.IndexOf("_");
-        }
-
-
-        miniMapObject = GameObject.Find("MovableMiniature").transform;
-        controllerType = OVRInput.Controller.RTouch;
-
-        RaycasterCursorVisual = GameObject.Find("RaycasterCursorVisual");
-        CursorWorldPositions = new List<Vector3>();
-
-        // triggerPressedFlag = 0;
-        // tem_triggerPressedFlag = 0;
-        triggerHasBeenPressed = false;
-
-        /*** Show Hint: Please Press A to Start and Show Future Visualization ***/
-        // showHintPressA = true;
-        // PressAGUIStyle = new GUIStyle();
-        // PressAGUIStyle.fontSize = 60;
-        // PressAGUIStyle.normal.textColor = Color.red;
-
-        // timer = 0;
-        startTimer = false;
-
-        situationNumber = 0;
-        setSituation(currentSituations[situationNumber]);
-        showHeatmap = false;
-        ShowArrow = false;
     }
 
     private void LateUpdate()
@@ -207,73 +232,73 @@ public class UserStudyInterface : MonoBehaviour
             switch (HighlightedGamePlayer)
             {
                 case GamePlayers.None:
-                    GoldHaloEffect.createHightedPlayer(null);
+                    GoldHaloEffect.createHighlightedPlayer(null);
                     break;
                 case GamePlayers.BluePlayer0:
-                    GoldHaloEffect.createHightedPlayer("RightPlayer0");
+                    GoldHaloEffect.createHighlightedPlayer("RightPlayer0");
                     break;
                 case GamePlayers.BluePlayer1:
-                    GoldHaloEffect.createHightedPlayer("RightPlayer1");
+                    GoldHaloEffect.createHighlightedPlayer("RightPlayer1");
                     break;
                 case GamePlayers.BluePlayer2:
-                    GoldHaloEffect.createHightedPlayer("RightPlayer2");
+                    GoldHaloEffect.createHighlightedPlayer("RightPlayer2");
                     break;
                 case GamePlayers.BluePlayer3:
-                    GoldHaloEffect.createHightedPlayer("RightPlayer3");
+                    GoldHaloEffect.createHighlightedPlayer("RightPlayer3");
                     break;
                 case GamePlayers.BluePlayer4:
-                    GoldHaloEffect.createHightedPlayer("RightPlayer4");
+                    GoldHaloEffect.createHighlightedPlayer("RightPlayer4");
                     break;
                 case GamePlayers.BluePlayer5:
-                    GoldHaloEffect.createHightedPlayer("RightPlayer5");
+                    GoldHaloEffect.createHighlightedPlayer("RightPlayer5");
                     break;
                 case GamePlayers.BluePlayer6:
-                    GoldHaloEffect.createHightedPlayer("RightPlayer6");
+                    GoldHaloEffect.createHighlightedPlayer("RightPlayer6");
                     break;
                 case GamePlayers.BluePlayer7:
-                    GoldHaloEffect.createHightedPlayer("RightPlayer7");
+                    GoldHaloEffect.createHighlightedPlayer("RightPlayer7");
                     break;
                 case GamePlayers.BluePlayer8:
-                    GoldHaloEffect.createHightedPlayer("RightPlayer8");
+                    GoldHaloEffect.createHighlightedPlayer("RightPlayer8");
                     break;
                 case GamePlayers.BluePlayer9:
-                    GoldHaloEffect.createHightedPlayer("RightPlayer9");
+                    GoldHaloEffect.createHighlightedPlayer("RightPlayer9");
                     break;
                 case GamePlayers.BluePlayer10:
-                    GoldHaloEffect.createHightedPlayer("RightPlayer10");
+                    GoldHaloEffect.createHighlightedPlayer("RightPlayer10");
                     break;
                 case GamePlayers.RedPlayer0:
-                    GoldHaloEffect.createHightedPlayer("LeftPlayer0");
+                    GoldHaloEffect.createHighlightedPlayer("LeftPlayer0");
                     break;
                 case GamePlayers.RedPlayer1:
-                    GoldHaloEffect.createHightedPlayer("LeftPlayer1");
+                    GoldHaloEffect.createHighlightedPlayer("LeftPlayer1");
                     break;
                 case GamePlayers.RedPlayer2:
-                    GoldHaloEffect.createHightedPlayer("LeftPlayer2");
+                    GoldHaloEffect.createHighlightedPlayer("LeftPlayer2");
                     break;
                 case GamePlayers.RedPlayer3:
-                    GoldHaloEffect.createHightedPlayer("LeftPlayer3");
+                    GoldHaloEffect.createHighlightedPlayer("LeftPlayer3");
                     break;
                 case GamePlayers.RedPlayer4:
-                    GoldHaloEffect.createHightedPlayer("LeftPlayer4");
+                    GoldHaloEffect.createHighlightedPlayer("LeftPlayer4");
                     break;
                 case GamePlayers.RedPlayer5:
-                    GoldHaloEffect.createHightedPlayer("LeftPlayer5");
+                    GoldHaloEffect.createHighlightedPlayer("LeftPlayer5");
                     break;
                 case GamePlayers.RedPlayer6:
-                    GoldHaloEffect.createHightedPlayer("LeftPlayer6");
+                    GoldHaloEffect.createHighlightedPlayer("LeftPlayer6");
                     break;
                 case GamePlayers.RedPlayer7:
-                    GoldHaloEffect.createHightedPlayer("LeftPlayer7");
+                    GoldHaloEffect.createHighlightedPlayer("LeftPlayer7");
                     break;
                 case GamePlayers.RedPlayer8:
-                    GoldHaloEffect.createHightedPlayer("LeftPlayer8");
+                    GoldHaloEffect.createHighlightedPlayer("LeftPlayer8");
                     break;
                 case GamePlayers.RedPlayer9:
-                    GoldHaloEffect.createHightedPlayer("LeftPlayer9");
+                    GoldHaloEffect.createHighlightedPlayer("LeftPlayer9");
                     break;
                 case GamePlayers.RedPlayer10:
-                    GoldHaloEffect.createHightedPlayer("LeftPlayer10");
+                    GoldHaloEffect.createHighlightedPlayer("LeftPlayer10");
                     break;
             }
         }
@@ -355,51 +380,14 @@ public class UserStudyInterface : MonoBehaviour
             }
         }
 
-
-        if ((OVRInput.IsControllerConnected(controllerType) && OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger)) || Input.GetMouseButtonDown(1))
+        if (startCondition)
         {
-            triggerHasBeenPressed = true;
-            // TO-DO Get and store cursor world positions
-            CursorWorldPositions.Add(GameObject.Find("FootballEngine").transform.TransformPoint(RaycasterCursorVisual.transform.position));
-        }
-        else
-        {
-            if (triggerHasBeenPressed && (showHeatmap || ShowArrow))
-            {
-                // TO-DO check if trigger has been pressed, if yes, calculate average, store, jump to another situation
-
-                situationNumber++;
-
-
-                // int minutes = Mathf.FloorToInt(timer / 60f);
-                // int second = Mathf.FloorToInt(timer % 60f);
-
-                storeAsCSV(ParticiantID, scenarioName, timer, CursorWorldPositions, CalculateAverage(CursorWorldPositions));
-
-                if (TimeLimit)
-                    timer = totalTime;
-                else
-                    timer = 0;
-
-                triggerHasBeenPressed = false;
-                CursorWorldPositions = new List<Vector3>();
-                try
-                {
-                    setSituation(currentSituations[situationNumber]);
-                    startTimer = false;
-                    showHeatmap = false;
-                    ShowArrow = false;
-                }
-                catch (ArgumentOutOfRangeException)
-                {
-                    StopPlayMode();
-                }
-            }
-
             if ((OVRInput.IsControllerConnected(controllerType) && OVRInput.Get(OVRInput.Button.One)) || Input.GetMouseButtonDown(0))  // TO-DO check if A has been pressed, if yes, show future, hide "Press A to show future" hint.
             {
+                startEyeTracking = true;
+
                 print("BUTTON ONE HAS BEEN PRESSED");
-                showHintPressA = false;
+                buttonAHasBeenPressed = true;
                 startTimer = true;
                 if (temp_scenarioName.Contains("Heatmap"))
                 {
@@ -407,36 +395,55 @@ public class UserStudyInterface : MonoBehaviour
                 }
                 else
                 {
-                    MovableFootball.multiFutureAmount = int.Parse(temp_scenarioName.Substring(0, 1));
+                    MovableFootball.conditionFutureAmount = int.Parse(temp_scenarioName.Substring(0, 1));
                     ShowArrow = true;
                 }
-
             }
-        }
 
-        if (startTimer)
-        {
-            if (TimeLimit)
+            if ((showHeatmap || ShowArrow) && buttonAHasBeenPressed)
             {
-                print("Timer: " + timer);
-                timer -= Time.deltaTime;
+                eyeTimer += Time.deltaTime;
+                saveEyeDataAsCSV(ParticiantID, conditionName, eyeTimer, EyeInteraction.hit, currentSituations[situationNumber]);
+            }
 
-                if (timer <= 0.01f)
+            if ((showHeatmap || ShowArrow) && ((OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) || Input.GetMouseButtonDown(1)))
+            {
+                triggerHasBeenPressed = true;
+                startTimer = false; // When the trigger is being pressed, will not record the time any more, and the first element of CursorWorldPositions is the position while pressing.
+                CursorWorldPositions.Add(GameObject.Find("FootballEngine").transform.TransformPoint(RaycasterCursorVisual.transform.position)); // Get and store cursor world positions
+            }
+            else
+            {
+                if (triggerHasBeenPressed && (showHeatmap || ShowArrow))
                 {
+                    // Check if trigger has been pressed, if yes, calculate average, store, jump to another situation
+
+
+                    // print("EyeInteraction.EyeTrackingMiniatureTimes: " + EyeInteraction.EyeTrackingMiniatureTimes);
+                    print("EyeInteraction.EyeTrackingMiniatureTimer: " + EyeInteraction.EyeTrackingMiniatureTimer);
+
+                    saveGeneralDataAsCSV(ParticiantID, conditionName, currentSituations[situationNumber], timer, CursorWorldPositions,
+                                EyeInteraction.EyeTrackingPitchPositions, EyeInteraction.EyeTrackingMiniatureTimer);
+
                     situationNumber++;
 
-                    storeAsCSV(ParticiantID, scenarioName, timer, CursorWorldPositions, CalculateAverage(CursorWorldPositions));
+                    // Reset parameters
+                    if (TimeLimit)
+                        timer = totalTime;
+                    else
+                        timer = 0;
 
-                    timer = totalTime;
-
+                    eyeTimer = 0;
+                    startEyeTracking = false;
                     triggerHasBeenPressed = false;
+                    buttonAHasBeenPressed = false;
+                    startTimer = false;
+                    showHeatmap = false;
+                    ShowArrow = false;
                     CursorWorldPositions = new List<Vector3>();
                     try
                     {
-                        setSituation(currentSituations[situationNumber]);
-                        startTimer = false;
-                        showHeatmap = false;
-                        ShowArrow = false;
+                        current_observer = setSituation(currentSituations[situationNumber]);
                     }
                     catch (ArgumentOutOfRangeException)
                     {
@@ -444,43 +451,157 @@ public class UserStudyInterface : MonoBehaviour
                     }
                 }
             }
-            else
-                timer += Time.deltaTime;
+
+            if (startTimer)
+            {
+                if (TimeLimit)
+                {
+                    print("Timer: " + timer);
+                    timer -= Time.deltaTime;
+
+                    if (timer <= 0.001f)
+                    {
+                        situationNumber++;
+
+                        // print("EyeInteraction.EyeTrackingMiniatureTimes: " + EyeInteraction.EyeTrackingMiniatureTimes);
+                        print("EyeInteraction.EyeTrackingMiniatureTimer: " + EyeInteraction.EyeTrackingMiniatureTimer);
+
+                        // storeAsCSV(ParticiantID, scenarioName, timer, CursorWorldPositions, CalculateAverage(CursorWorldPositions));
+                        saveGeneralDataAsCSV(ParticiantID, conditionName, currentSituations[situationNumber], timer, CursorWorldPositions,
+                                    EyeInteraction.EyeTrackingPitchPositions, EyeInteraction.EyeTrackingMiniatureTimer);
+
+                        timer = totalTime;
+
+                        eyeTimer = 0;
+                        startEyeTracking = false;
+                        triggerHasBeenPressed = false;
+                        buttonAHasBeenPressed = false;
+                        startTimer = false;
+                        showHeatmap = false;
+                        ShowArrow = false;
+                        CursorWorldPositions = new List<Vector3>();
+                        try
+                        {
+                            current_observer = setSituation(currentSituations[situationNumber]);
+                        }
+                        catch (ArgumentOutOfRangeException)
+                        {
+                            StopPlayMode();
+                        }
+                    }
+                }
+                else
+                    timer += Time.deltaTime;
+            }
+
+
+            GameObject.Find("OVRCameraRig").transform.position = new Vector3(GameObject.Find(current_observer).transform.position.x, 0, GameObject.Find(current_observer).transform.position.z);
+            GameObject.Find("OVRCameraRig").transform.rotation = GameObject.Find(current_observer).transform.rotation;
         }
-        // else
-        // {
-        //     if (TimeLimit)
-        //         timer = totalTime;
-        //     else
-        //         timer = 0;
-        // }
     }
 
 
-    // private void OnGUI()
-    // {
-    //     if (showHintPressA)
-    //     {
-    //         // GUI.Label(new Rect(0, 0, Screen.width, Screen.height * 0.1f), "Please Press A to Start", PressAGUIStyle);
-    //         GUI.Label(new Rect(Screen.width / 2 - 400, 20, 200, 40), "Please Press A to Start and Show Future Visualization", PressAGUIStyle);
-    //     }
-    // }
-
-    private void storeAsCSV(int ParticiantID, string Situation, float CompletionTime, List<Vector3> SelectedPositions, Vector3 AveragePosition)
+    private void saveGeneralDataAsCSV(int ParticiantID, string Condition, List<int> situation, float CompletionTime, List<Vector3> SelectedPositions, List<Vector3> EyeTrackingPitchPositions, float EyeTrackingMiniatureTimer)
     {
-        string filePath = "C:/Users/chenk/Desktop/First_Project/User_Study/Collected_Data_CSV.csv";
+        // Get the current date
+        DateTime currentDate = DateTime.Now;
+
+        string observer;
+        string highlightedPlayer;
+        if (situation[0] > 10)
+            observer = "LeftPlayer" + (situation[0] - 10).ToString();
+        else
+            observer = "RightPlayer" + situation[0].ToString();
+        if (situation[1] > 10)
+            highlightedPlayer = "LeftPlayer" + (situation[1] - 10).ToString();
+        else
+            highlightedPlayer = "RightPlayer" + situation[1].ToString();
+        GameObject observerObject = GameObject.Find(observer);
+        GameObject highlightedPlayerObject = GameObject.Find(highlightedPlayer);
+
+        float ObserverTargetDistance = Vector3.Distance(observerObject.transform.position, highlightedPlayerObject.transform.position);
+        float SelectedpositionTargetDistance = Vector3.Distance(SelectedPositions[0], highlightedPlayerObject.transform.position);
+
+        string filePath = "C:/Users/chenk/Desktop/First_Project/User_Study/Collected_Data_CSV/User_Study_Data.csv";
+        using (StreamWriter data = new StreamWriter(filePath, true))
+        {
+            data.WriteLine($"{currentDate}, {ParticiantID},{Condition}, {situation[3]},{CompletionTime}, {ObserverTargetDistance}, {SelectedpositionTargetDistance}, {EyeTrackingMiniatureTimer}, {ConvertListVector3ToCSVString(SelectedPositions)}, {ConvertListVector3ToCSVString(EyeTrackingPitchPositions)},  {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}");
+        }
+    }
+    private void saveEyeDataAsCSV(int ParticipantID, string Condition, float time, RaycastHit hit, List<int> situation)
+    {
+        // Get the current date
+        DateTime currentDate = DateTime.Now;
+
+        string observer;
+        string highlightedPlayer;
+        if (situation[0] > 10)
+            observer = "LeftPlayer" + (situation[0] - 10).ToString();
+        else
+            observer = "RightPlayer" + situation[0].ToString();
+        if (situation[1] > 10)
+            highlightedPlayer = "LeftPlayer" + (situation[1] - 10).ToString();
+        else
+            highlightedPlayer = "RightPlayer" + situation[1].ToString();
+        GameObject observerObject = GameObject.Find(observer);
+        GameObject highlightedPlayerObject = GameObject.Find(highlightedPlayer);
+
+        float ObserverTargetDistance = Vector3.Distance(observerObject.transform.position, highlightedPlayerObject.transform.position);
+        float EyeTargetDistance = Vector3.Distance(hit.point, highlightedPlayerObject.transform.position);
+
+        // string filePath = "C:/Users/chenk/Desktop/First_Project/User_Study/Collected_Data_CSV/User_Study_Eye_Data.csv";
+
+        // if (hit.collider != null)
+        // {
         //     using (StreamWriter data = new StreamWriter(filePath, true))
         //     {
-        //         data.WriteLine($"{ParticiantID},{Situation},{CompletionTime},{SelectedPositions}, {AveragePosition}");
+        //         data.WriteLine($"{currentDate}, {ParticipantID}, {Condition}, {situation[3]}, {time}, {ConvertListVector3ToCSVString(new List<Vector3> { hit.point })}, {hit.collider.gameObject.name}, {EyeTargetDistance}, {ObserverTargetDistance}, {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}");
         //     }
-        Debug.Log("Participant ID: " + ParticiantID + " Situation: " + Situation + " CompletionTime: " + CompletionTime + " AveragePosition: " + AveragePosition);
+        // }
     }
+    private string ConvertListToCSV(List<int> dataList)
+    {
+        // Convert the list to a CSV-formatted string
+        string csvData = string.Join(";", dataList);
 
-    private void setSituation(List<int> situation) // [Observer, Highlighted, Step_number], blue(right) player:1-10, red(left) player:11-20
+        return csvData;
+    }
+    string ConvertListVector3ToCSVString(List<Vector3> list)
+    {
+        StringBuilder sb = new StringBuilder();
+
+        // Append the list as a single column in the CSV string
+        sb.Append("[");
+        for (int i = 0; i < list.Count; i++)
+        {
+            Vector3 vector = list[i];
+            sb.Append("[" + vector.x + ";" + vector.y + ";" + vector.z + "]");
+            if (i < list.Count - 1)
+                sb.Append("; ");
+        }
+        sb.Append("]");
+        return sb.ToString();
+    }
+    // string ConvertListToCSVString(List<Vector3> list)
+    // {
+    //     StringBuilder sb = new StringBuilder();
+    //     sb.Append("[");
+    //     foreach (Vector3 vector in list)
+    //     {
+    //         sb.Append($"{vector.x}, {vector.y}, {vector.z}");
+    //     }
+    //     sb.Append("]");
+    //     return sb.ToString();
+    // }
+
+    private string setSituation(List<int> situation) // [Observer, Highlighted, Step_number], blue(right) player:1-10, red(left) player:11-20
     {
         string observer;
         string highlightedPlayer;
         int stepNumber;
+
+        stepNumber = situation[2];
+        MovableFootball.step_num = stepNumber;
 
         if (situation[0] > 10)
             observer = "LeftPlayer" + (situation[0] - 10).ToString();
@@ -491,13 +612,10 @@ public class UserStudyInterface : MonoBehaviour
         else
             highlightedPlayer = "RightPlayer" + situation[1].ToString();
 
-        stepNumber = situation[2];
-
-        MovableFootball.step_num = stepNumber;
-        GoldHaloEffect.createHightedPlayer(highlightedPlayer);
-        GameObject.Find("OVRCameraRig").transform.position = new Vector3(GameObject.Find(observer).transform.position.x, 0, GameObject.Find(observer).transform.position.z);
-        GameObject.Find("OVRCameraRig").transform.rotation = GameObject.Find(observer).transform.rotation;
-
+        GoldHaloEffect.createHighlightedObserver(observer);
+        GoldHaloEffect.hideObserverPlayerObject(observer);
+        GoldHaloEffect.createHighlightedPlayer(highlightedPlayer);
+        return observer;
     }
 
 
@@ -511,7 +629,6 @@ public class UserStudyInterface : MonoBehaviour
             index++;
             sum += values[i];
         }
-
         return sum / index;
     }
 

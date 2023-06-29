@@ -24,7 +24,9 @@ public class MovableFootball : MonoBehaviour
         OriginalDuration2_FutureAmount5_FutureFar20_Interval3,
         OriginalDuration500_FutureAmount5_FutureFar20_Interval5,
         OriginalDuration1000_FutureAmount10_FutureFar20_Interval3,
-        OriginalDuration202_FutureAmount20_FutureFar100_Interval1
+        OriginalDuration202_FutureAmount20_FutureFar100_Interval1,
+        OriginalDuration3000_FutureAmount5_FutureFar15_Interval10,
+        OriginalDuration3000_FutureAmount10_FutureFar20_Interval10
     }
     [SerializeField]
     public Scenarios ScenariosConfiguration;
@@ -82,6 +84,7 @@ public class MovableFootball : MonoBehaviour
     public float FutureDetails = 0.5f;
     public int futureAmount = 2;
     public static int multiFutureAmount;
+    public static int conditionFutureAmount;
 
     public int stepToCalculate = 3;
 
@@ -167,6 +170,12 @@ public class MovableFootball : MonoBehaviour
             case Scenarios.OriginalDuration202_FutureAmount20_FutureFar100_Interval1:
                 selectedScenarioConfiguration = "OriginalDuration202_FutureAmount20_FutureFar100_Interval1";
                 break;
+            case Scenarios.OriginalDuration3000_FutureAmount5_FutureFar15_Interval10:
+                selectedScenarioConfiguration = "OriginalDuration3000_FutureAmount5_FutureFar15_Interval10";
+                break;
+            case Scenarios.OriginalDuration3000_FutureAmount10_FutureFar20_Interval10:
+                selectedScenarioConfiguration = "OriginalDuration3000_FutureAmount10_FutureFar20_Interval10";
+                break;
         }
 
         // Find the index of the underscore (_) separating the two substrings
@@ -217,6 +226,12 @@ public class MovableFootball : MonoBehaviour
         sw.Stop();
         print("Cost time: " + sw.ElapsedMilliseconds);
 
+        conditionFutureAmount = futureAmount;
+
+        /*** Dataset***/
+        Dataset.stepToCaulate = stepToCalculate;
+        Dataset.fixedGameDuration = fixedGameDuration;
+
         MultiFuture.startFutureInfo(stepMultiFuture, FarFuture);
         // MiniatureView.startMiniatureView();
         MiniatureView.startMovableMiniature();
@@ -225,11 +240,13 @@ public class MovableFootball : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!controlStepNum)
+        if (!controlStepNum && !gamePlay && UserStudyInterface.startCondition)
             StepNum = step_num;
-
+        if (UserStudyInterface.startCondition)
+            multiFutureAmount = conditionFutureAmount;
+        else
+            multiFutureAmount = futureAmount;
         multiFutureFar = FarFuture;
-        multiFutureAmount = futureAmount;
         MultiFuture.updateFutureFar(StepNum, FarFuture, FutureDetails);
         MultiFuture.updateFutureAmount(showFuture);
         /*** Movable Miniature***/
@@ -269,7 +286,7 @@ public class MovableFootball : MonoBehaviour
 
                 player(originalGame, StepNum);
                 MultiFuture.updateFutureInfo(StepNum, FarFuture, showFuture);
-                realTimeHeatmap(stepMultiFuture, StepNum, showHeatmap);
+                realTimeHeatmap(stepMultiFuture, futureAmount, FarFuture, StepNum, showHeatmap);
 
                 StepNum += 1;
             }
@@ -283,12 +300,12 @@ public class MovableFootball : MonoBehaviour
                 // player(originalGame, StepNum);
                 player(originalGame, StepNum);
                 MultiFuture.updateFutureInfo(StepNum, FarFuture, showFuture);
-                realTimeHeatmap(stepMultiFuture, StepNum, showHeatmap);
+                realTimeHeatmap(stepMultiFuture, futureAmount, FarFuture, StepNum, showHeatmap);
             }
         }
     }
 
-    public void realTimeHeatmap(Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> stepMultiFuture, int currentStep, bool showHeatmap)
+    public void realTimeHeatmap(Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> stepMultiFuture, int futureAmount, int futureFar, int currentStep, bool showHeatmap)
     {
         foreach (var stepFuturesPair in stepMultiFuture)
         {
@@ -300,39 +317,53 @@ public class MovableFootball : MonoBehaviour
                 {
                     List<Vector2> rightPlayer = new List<Vector2>();
                     List<Vector2> leftPlayer = new List<Vector2>();
-                    for (int i = 0; i < futureAmount; i++)
-                    {
-
-                        foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["RightTeamLocations"][playerId])
-                        {
-                            // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
-                            rightPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
-                        }
-                        foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["LeftTeamLocations"][playerId])
-                        {
-                            // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
-                            leftPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
-                        }
-                    }
-                    playersPositions.Add(rightPlayer);
-                    playersPositions.Add(leftPlayer);
-
                     List<Vector2> mRightPlayer = new List<Vector2>();
                     List<Vector2> mLeftPlayer = new List<Vector2>();
                     for (int i = 0; i < futureAmount; i++)
                     {
-
-                        foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["RightTeamLocations"][playerId])
+                        for (int j = 0; j < futureFar; j++)
                         {
-                            // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
+                            List<float> position = stepMultiFuture[stepFuturesPair.Key][i]["RightTeamLocations"][playerId][j];
+                            rightPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
                             mRightPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
                         }
-                        foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["LeftTeamLocations"][playerId])
+                        for (int j = 0; j < futureFar; j++)
                         {
-                            // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
+                            List<float> position = stepMultiFuture[stepFuturesPair.Key][i]["LeftTeamLocations"][playerId][j];
+                            leftPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
                             mLeftPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
                         }
+
+                        // foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["RightTeamLocations"][playerId])
+                        // {
+                        //     // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
+                        //     rightPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
+                        // }
+                        // foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["LeftTeamLocations"][playerId])
+                        // {
+                        //     // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
+                        //     leftPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
+                        // }
                     }
+                    playersPositions.Add(rightPlayer);
+                    playersPositions.Add(leftPlayer);
+
+                    // List<Vector2> mRightPlayer = new List<Vector2>();
+                    // List<Vector2> mLeftPlayer = new List<Vector2>();
+                    // for (int i = 0; i < futureAmount; i++)
+                    // {
+
+                    //     foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["RightTeamLocations"][playerId])
+                    //     {
+                    //         // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
+                    //         mRightPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
+                    //     }
+                    //     foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["LeftTeamLocations"][playerId])
+                    //     {
+                    //         // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
+                    //         mLeftPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
+                    //     }
+                    // }
                     mplayersPositions.Add(mRightPlayer);
                     mplayersPositions.Add(mLeftPlayer);
                 }
