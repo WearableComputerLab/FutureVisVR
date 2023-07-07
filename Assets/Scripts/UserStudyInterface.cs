@@ -59,7 +59,7 @@ public class UserStudyInterface : MonoBehaviour
     string temp_scenarioName;
     private string current_observer;
 
-    private bool buttonAHasBeenPressed;
+    private bool VisButtonAHasBeenPressed;
     private GUIStyle PressAGUIStyle;
 
     /*** Count Completion Time***/
@@ -77,6 +77,10 @@ public class UserStudyInterface : MonoBehaviour
     public static bool startEyeTracking;
     private float eyeTimer;
 
+    /*** Show Hide Players ***/
+    private bool showPlayers;
+    private int PressButtonATimes = 0;
+
     private void Start()
     {
         /*** Step Num of Situations in Original Game ***/  // [Observer, Highlighted, Step_number], blue(right) player:1-10, red(left) player:11-20
@@ -87,39 +91,6 @@ public class UserStudyInterface : MonoBehaviour
         Yes_Time_Limit_2_Arrows_Trials = Dataset.Yes_Time_Limit_2_Arrows_Trials;
         Yes_Time_Limit_5_Arrows_Trials = Dataset.Yes_Time_Limit_5_Arrows_Trials;
         Yes_Time_Limit_Heatmap_Trials = Dataset.Yes_Time_Limit_Heatmap_Trials;
-
-        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 15, 11, 0 });
-        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 20, 13, 489 });
-        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 7, 10, 384 });
-        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 3, 16, 12 });
-        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 1, 6, 60 });
-        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 12, 5, 234 });
-        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 10, 1, 108 });
-        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 2, 18, 144 });
-        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 16, 2, 213 });
-        // No_Time_Limit_2_Arrows_Situations.Add(new List<int> { 8, 7, 150 });
-
-        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 15, 11, 0 });
-        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 20, 13, 489 });
-        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 7, 10, 384 });
-        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 3, 16, 12 });
-        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 1, 6, 60 });
-        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 12, 5, 234 });
-        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 10, 1, 108 });
-        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 2, 18, 144 });
-        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 16, 2, 213 });
-        // Yes_Time_Limit_2_Arrows_Situations.Add(new List<int> { 8, 7, 150 });
-
-        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 15, 11, 0 });
-        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 20, 13, 489 });
-        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 7, 10, 384 });
-        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 3, 16, 12 });
-        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 1, 6, 60 });
-        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 12, 5, 234 });
-        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 10, 1, 108 });
-        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 2, 18, 144 });
-        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 16, 2, 213 });
-        // Yes_Time_Limit_Heatmap_Situations.Add(new List<int> { 8, 7, 150 });
 
         /*** Select Scenario from Unity Inspector ***/
         switch (condition)
@@ -201,10 +172,8 @@ public class UserStudyInterface : MonoBehaviour
             /*** Ray & miniMap***/
             miniMapObject = GameObject.Find("MovableMiniature").transform;
             controllerType = OVRInput.Controller.RTouch;
-
             RaycasterCursorVisual = GameObject.Find("RaycasterCursorVisual");
             CursorWorldPositions = new List<Vector3>();
-
 
             /*** Setup experiment parameters before running ***/
             // previous_observer = currentSituations[0][0];
@@ -213,6 +182,10 @@ public class UserStudyInterface : MonoBehaviour
             startTimer = false;
             situationNumber = 0;
             current_observer = setSituation(currentSituations[situationNumber]);
+            /*** Hide players at the beginning ***/
+            showPlayers = false;
+            ShowHidePlayers(showPlayers);
+
             showHeatmap = false;
             ShowArrow = false;
         }
@@ -382,12 +355,35 @@ public class UserStudyInterface : MonoBehaviour
 
         if (startCondition)
         {
-            if ((OVRInput.IsControllerConnected(controllerType) && OVRInput.Get(OVRInput.Button.One)) || Input.GetMouseButtonDown(0))  // TO-DO check if A has been pressed, if yes, show future, hide "Press A to show future" hint.
+            if (OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.Two))
             {
+                ShowMiniature = false;
+            }
+            else if (OVRInput.IsControllerConnected(controllerType) && OVRInput.GetUp(OVRInput.Button.Two))
+            {
+                ShowMiniature = true;
+            }
+
+            if (((OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.One)) || Input.GetMouseButtonDown(0)) && PressButtonATimes == 0)
+            {
+                ControllerVibrate();
+
+                PressButtonATimes++;
+                showPlayers = true;
+                ShowHidePlayers(showPlayers);
+                ShowMiniature = true;
+            }
+            // if ((OVRInput.IsControllerConnected(controllerType) && OVRInput.Get(OVRInput.Button.One)) || Input.GetMouseButtonDown(0))  // TO-DO check if A has been pressed, if yes, show future, hide "Press A to show future" hint.
+            else if ((((OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.One)) || Input.GetMouseButtonDown(0)) && showPlayers && PressButtonATimes == 1))  // TO-DO check if A has been pressed, if yes, show future, hide "Press A to show future" hint.
+            {
+                ControllerVibrate();
+
+                // PressButtonATimes++;
+
                 startEyeTracking = true;
 
                 print("BUTTON ONE HAS BEEN PRESSED");
-                buttonAHasBeenPressed = true;
+                VisButtonAHasBeenPressed = true;
                 startTimer = true;
                 if (temp_scenarioName.Contains("Heatmap"))
                 {
@@ -397,10 +393,11 @@ public class UserStudyInterface : MonoBehaviour
                 {
                     MovableFootball.conditionFutureAmount = int.Parse(temp_scenarioName.Substring(0, 1));
                     ShowArrow = true;
+                    // MultiFuture.updateFutureFarDetails(MovableFootball.step_num, MovableFootball.multiFutureFar, 1);
                 }
             }
 
-            if ((showHeatmap || ShowArrow) && buttonAHasBeenPressed)
+            if ((showHeatmap || ShowArrow) && VisButtonAHasBeenPressed)
             {
                 eyeTimer += Time.deltaTime;
                 saveEyeDataAsCSV(ParticiantID, conditionName, eyeTimer, EyeInteraction.hit, currentSituations[situationNumber]);
@@ -408,6 +405,8 @@ public class UserStudyInterface : MonoBehaviour
 
             if ((showHeatmap || ShowArrow) && ((OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) || Input.GetMouseButtonDown(1)))
             {
+                ControllerVibrate();
+
                 triggerHasBeenPressed = true;
                 startTimer = false; // When the trigger is being pressed, will not record the time any more, and the first element of CursorWorldPositions is the position while pressing.
                 CursorWorldPositions.Add(GameObject.Find("FootballEngine").transform.TransformPoint(RaycasterCursorVisual.transform.position)); // Get and store cursor world positions
@@ -432,11 +431,12 @@ public class UserStudyInterface : MonoBehaviour
                         timer = totalTime;
                     else
                         timer = 0;
+                    Timer.currentTime = timer;
 
                     eyeTimer = 0;
                     startEyeTracking = false;
                     triggerHasBeenPressed = false;
-                    buttonAHasBeenPressed = false;
+                    VisButtonAHasBeenPressed = false;
                     startTimer = false;
                     showHeatmap = false;
                     ShowArrow = false;
@@ -449,6 +449,10 @@ public class UserStudyInterface : MonoBehaviour
                     {
                         StopPlayMode();
                     }
+                    showPlayers = false;
+                    ShowHidePlayers(showPlayers);
+                    ShowMiniature = false;
+                    PressButtonATimes = 0;
                 }
             }
 
@@ -461,21 +465,18 @@ public class UserStudyInterface : MonoBehaviour
 
                     if (timer <= 0.001f)
                     {
-                        situationNumber++;
-
-                        // print("EyeInteraction.EyeTrackingMiniatureTimes: " + EyeInteraction.EyeTrackingMiniatureTimes);
-                        print("EyeInteraction.EyeTrackingMiniatureTimer: " + EyeInteraction.EyeTrackingMiniatureTimer);
-
-                        // storeAsCSV(ParticiantID, scenarioName, timer, CursorWorldPositions, CalculateAverage(CursorWorldPositions));
                         saveGeneralDataAsCSV(ParticiantID, conditionName, currentSituations[situationNumber], timer, CursorWorldPositions,
                                     EyeInteraction.EyeTrackingPitchPositions, EyeInteraction.EyeTrackingMiniatureTimer);
 
+                        situationNumber++;
+
                         timer = totalTime;
+                        Timer.currentTime = timer;
 
                         eyeTimer = 0;
                         startEyeTracking = false;
                         triggerHasBeenPressed = false;
-                        buttonAHasBeenPressed = false;
+                        VisButtonAHasBeenPressed = false;
                         startTimer = false;
                         showHeatmap = false;
                         ShowArrow = false;
@@ -488,10 +489,15 @@ public class UserStudyInterface : MonoBehaviour
                         {
                             StopPlayMode();
                         }
+                        showPlayers = false;
+                        ShowHidePlayers(showPlayers);
+                        ShowMiniature = false;
+                        PressButtonATimes = 0;
                     }
                 }
                 else
                     timer += Time.deltaTime;
+                Timer.currentTime = timer;
             }
 
 
@@ -501,7 +507,7 @@ public class UserStudyInterface : MonoBehaviour
     }
 
 
-    private void saveGeneralDataAsCSV(int ParticiantID, string Condition, List<int> situation, float CompletionTime, List<Vector3> SelectedPositions, List<Vector3> EyeTrackingPitchPositions, float EyeTrackingMiniatureTimer)
+    private void saveGeneralDataAsCSV(int ParticipantID, string Condition, List<int> situation, float CompletionTime, List<Vector3> SelectedPositions, List<Vector3> EyeTrackingPitchPositions, float EyeTrackingMiniatureTimer)
     {
         // Get the current date
         DateTime currentDate = DateTime.Now;
@@ -520,12 +526,22 @@ public class UserStudyInterface : MonoBehaviour
         GameObject highlightedPlayerObject = GameObject.Find(highlightedPlayer);
 
         float ObserverTargetDistance = Vector3.Distance(observerObject.transform.position, highlightedPlayerObject.transform.position);
-        float SelectedpositionTargetDistance = Vector3.Distance(SelectedPositions[0], highlightedPlayerObject.transform.position);
+        float SelectedpositionTargetDistance = -1; // -1 indicates no distance
+        if (SelectedPositions.Count != 0)
+            SelectedpositionTargetDistance = Vector3.Distance(SelectedPositions[0], highlightedPlayerObject.transform.position);
 
-        string filePath = "C:/Users/chenk/Desktop/First_Project/User_Study/Collected_Data_CSV/User_Study_Data.csv";
+        string filePath = "C:/Users/chenk/Desktop/First_Project/User_Study/Collected_Data_CSV/" + "Collected_PID_" + ParticipantID.ToString() + ".csv";
+
+        bool fileExists = File.Exists(filePath);
+
         using (StreamWriter data = new StreamWriter(filePath, true))
         {
-            data.WriteLine($"{currentDate}, {ParticiantID},{Condition}, {situation[3]},{CompletionTime}, {ObserverTargetDistance}, {SelectedpositionTargetDistance}, {EyeTrackingMiniatureTimer}, {ConvertListVector3ToCSVString(SelectedPositions)}, {ConvertListVector3ToCSVString(EyeTrackingPitchPositions)},  {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}");
+            if (!fileExists)
+            {
+                data.WriteLine($"{"Date"}, {"ParticipantID"}, {"Condition"}, {"Situation"}, {"CompletionTime"}, {"ObserverTargetDistance"}, {"SelectedpositionTargetDistance"}, {"EyeTrackingMiniatureTimer"}, {"SelectedPositions"}, {"ObserverObjectPosition"}, {"HighlightedPlayerObjectPosition"}");
+            }
+            // data.WriteLine($"{currentDate}, {ParticiantID},{Condition}, {situation[3]},{CompletionTime}, {ObserverTargetDistance}, {SelectedpositionTargetDistance}, {EyeTrackingMiniatureTimer}, {ConvertListVector3ToCSVString(SelectedPositions)}, {ConvertListVector3ToCSVString(EyeTrackingPitchPositions)},  {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}");
+            data.WriteLine($"{currentDate}, {ParticipantID},{Condition}, {situation[3]},{CompletionTime}, {ObserverTargetDistance}, {SelectedpositionTargetDistance}, {EyeTrackingMiniatureTimer}, {ConvertListVector3ToCSVString(SelectedPositions)},  {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}");
         }
     }
     private void saveEyeDataAsCSV(int ParticipantID, string Condition, float time, RaycastHit hit, List<int> situation)
@@ -543,21 +559,30 @@ public class UserStudyInterface : MonoBehaviour
             highlightedPlayer = "LeftPlayer" + (situation[1] - 10).ToString();
         else
             highlightedPlayer = "RightPlayer" + situation[1].ToString();
+
         GameObject observerObject = GameObject.Find(observer);
         GameObject highlightedPlayerObject = GameObject.Find(highlightedPlayer);
+
+        GameObject head = GameObject.Find("OVRCameraRig");
 
         float ObserverTargetDistance = Vector3.Distance(observerObject.transform.position, highlightedPlayerObject.transform.position);
         float EyeTargetDistance = Vector3.Distance(hit.point, highlightedPlayerObject.transform.position);
 
-        // string filePath = "C:/Users/chenk/Desktop/First_Project/User_Study/Collected_Data_CSV/User_Study_Eye_Data.csv";
+        string filePath = "C:/Users/chenk/Desktop/First_Project/User_Study/User_Study_Eye_Data/" + "Eye_PID_" + ParticipantID.ToString() + "_" + Condition + ".csv";
 
-        // if (hit.collider != null)
-        // {
-        //     using (StreamWriter data = new StreamWriter(filePath, true))
-        //     {
-        //         data.WriteLine($"{currentDate}, {ParticipantID}, {Condition}, {situation[3]}, {time}, {ConvertListVector3ToCSVString(new List<Vector3> { hit.point })}, {hit.collider.gameObject.name}, {EyeTargetDistance}, {ObserverTargetDistance}, {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}");
-        //     }
-        // }
+        bool fileExists = File.Exists(filePath);
+
+        if (hit.collider != null)
+        {
+            using (StreamWriter data = new StreamWriter(filePath, true))
+            {
+                if (!fileExists)
+                {
+                    data.WriteLine($"{"Date"},{"ParticiantID"},{"Condition"},{"Situation"},{"Time"},{"EyeTrackingPositions"},{"HitObject"},{"EyeTargetDistance"},{"ObserverTargetDistance"},{"ObserverObjectPosition"},{"OighlightedPlayerObject"}, {"HeadPosition"}, {"HeadRotation"}");
+                }
+                data.WriteLine($"{currentDate}, {ParticipantID}, {Condition}, {situation[3]}, {time}, {ConvertListVector3ToCSVString(new List<Vector3> { hit.point })}, {hit.collider.gameObject.name}, {EyeTargetDistance}, {ObserverTargetDistance}, {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { head.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { new Vector3(head.transform.rotation.x, head.transform.rotation.y, head.transform.rotation.z) })}");
+            }
+        }
     }
     private string ConvertListToCSV(List<int> dataList)
     {
@@ -618,6 +643,27 @@ public class UserStudyInterface : MonoBehaviour
         return observer;
     }
 
+    private void ShowHidePlayers(bool show)
+    {
+        if (show)
+        {
+            for (int i = 0; i < 11; i++)
+            {
+
+                GameObject.Find("RightPlayer" + i).transform.localScale = new Vector3(0.65f, 2.2f, 0.65f);
+                GameObject.Find("LeftPlayer" + i).transform.localScale = new Vector3(0.65f, 2.2f, 0.65f);
+            }
+            GameObject.Find(current_observer).transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+        }
+        else if (!show)
+        {
+            for (int i = 0; i < 11; i++)
+            {
+                GameObject.Find("RightPlayer" + i).transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+                GameObject.Find("LeftPlayer" + i).transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+            }
+        }
+    }
 
     private Vector3 CalculateAverage(List<Vector3> values)
     {
@@ -630,6 +676,18 @@ public class UserStudyInterface : MonoBehaviour
             sum += values[i];
         }
         return sum / index;
+    }
+
+    private void ControllerVibrate()
+    {
+        // Trigger haptic feedback (vibration) on the controller
+        OVRInput.SetControllerVibration(1.5f, 1.5f, OVRInput.Controller.Active);
+        Invoke("StopVibration", 0.2f);
+    }
+    private void StopVibration()
+    {
+        // Stop the haptic feedback (vibration)
+        OVRInput.SetControllerVibration(0, 0, OVRInput.Controller.Active);
     }
 
     private void StopPlayMode()

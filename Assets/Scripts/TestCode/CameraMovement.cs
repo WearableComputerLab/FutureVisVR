@@ -10,6 +10,6 @@ public class CameraMovement : MonoBehaviour
         float vertical = Input.GetAxis("Vertical");
 
         Vector3 movement = new Vector3(horizontal, 0f, vertical) * movementSpeed * Time.deltaTime;
-        // GameObject.Find("MRTK-Quest_OVRCameraRig(Clone)").transform.Translate(movement);
+        GameObject.Find("OVRCameraRig").transform.Translate(movement);
     }
 }

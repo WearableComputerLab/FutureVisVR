@@ -62,8 +62,11 @@ public class MultiFuture : MonoBehaviour
             break;
         }
     }
-    public static void updateFutureInfo(int currentStep, int farFuture, bool futureVisShow)
+    public static void updateFutureInfoAtCaculatedStep(int currentStep, int farFuture, bool futureVisShow)
     {
+        /***
+        updateFutureInfo once while the current step is the calculated step.
+        ***/
         int futureNo = 0;
         int playerNumber = 0;
 
@@ -172,14 +175,14 @@ public class MultiFuture : MonoBehaviour
                                 }
                             }
 
-                            if (passEventPositions.Count != 0 && eventPlayer != null)
-                            {
-                                createEventPlayer(passEventPositions, currentStep, eventPlayer, listCopyEventPlayer[futureNo]);
-                            }
-                            else if (shotEventPositions.Count != 0 && eventPlayer != null)
-                            {
-                                createEventPlayer(shotEventPositions, currentStep, eventPlayer, listCopyEventPlayer[futureNo]);
-                            }
+                            // if (passEventPositions.Count != 0 && eventPlayer != null)
+                            // {
+                            //     createEventPlayer(passEventPositions, currentStep, eventPlayer, listCopyEventPlayer[futureNo]);
+                            // }
+                            // else if (shotEventPositions.Count != 0 && eventPlayer != null)
+                            // {
+                            //     createEventPlayer(shotEventPositions, currentStep, eventPlayer, listCopyEventPlayer[futureNo]);
+                            // }
 
 
                         }
@@ -188,32 +191,37 @@ public class MultiFuture : MonoBehaviour
             }
         }
 
-        if (tempShowFuture != futureVisShow)
-        {
-            tempShowFuture = futureVisShow;
+        // if (tempShowFuture != futureVisShow)
+        // {
+        //     tempShowFuture = futureVisShow;
 
-            print("futureNo:" + futureNo);
+        //     print("futureNo:" + futureNo);
 
-            String rRightPlayer = "RightPlayer";
-            String mRightPlayer = "m" + rRightPlayer;
-            String rLeftPlayer = "LeftPlayer";
-            String mLeftPlayer = "m" + rLeftPlayer;
-            for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
-            {
-                for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
-                // for (int eachFutureNumber = 1; eachFutureNumber <= MovableFootball.multiFutureAmount; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
-                {
-                    // visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-                    // visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-                    // visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-                    // visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-                }
-            }
-        }
+        //     String rRightPlayer = "RightPlayer";
+        //     String mRightPlayer = "m" + rRightPlayer;
+        //     String rLeftPlayer = "LeftPlayer";
+        //     String mLeftPlayer = "m" + rLeftPlayer;
+        //     for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
+        //     {
+        //         for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+        //         // for (int eachFutureNumber = 1; eachFutureNumber <= MovableFootball.multiFutureAmount; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+        //         {
+        //             // visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+        //             // visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+        //             // visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+        //             // visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+        //         }
+        //     }
+        // }
     }
 
-    public static void updateFutureFar(int currentStep, int farFuture, float futureDetails)
+    public static void updateFutureFarDetails(int currentStep, int farFuture, float futureDetails, bool EnableFutureFarDetails)
     {
+        /***
+
+        update future far and future details every frame.
+
+        ***/
         int futureNo = 0;
         int playerNumber = 0;
         foreach (var stepFuturesPair in stepMultiFuture)
@@ -221,8 +229,10 @@ public class MultiFuture : MonoBehaviour
             if (stepFuturesPair.Key.Replace("Step", String.Empty).Equals(currentStep.ToString()))
             {
                 // print("Current Step: " + currentStep);
-                foreach (var eachFuture in stepFuturesPair.Value)
+                // foreach (var eachFuture in stepFuturesPair.Value)
+                for (int i = 0; i < MovableFootball.multiFutureAmount; i++)
                 {
+                    var eachFuture = stepFuturesPair.Value[i];
                     futureNo++;
                     List<Dictionary<int, Vector3>> passEventPositions = new List<Dictionary<int, Vector3>>();
                     List<Dictionary<int, Vector3>> shotEventPositions = new List<Dictionary<int, Vector3>>();
@@ -245,12 +255,14 @@ public class MultiFuture : MonoBehaviour
                                     Vector3 mPlayerPosition = new Vector3(MovableFootball.scale_x(infoPair.Value[playerId][step][0]) / MovableFootball.scaleSize, -0.195f, MovableFootball.scale_z(infoPair.Value[playerId][step][1]) / MovableFootball.scaleSize);
 
                                     Vector3 mLocalPosition = GameObject.Find("MovableMiniature").transform.TransformPoint(mPlayerPosition);
+
                                     /*** Path ***/
                                     rPlayerPathPosition.Add(rPlayerPosition);
                                     // mPlayerPathPosition.Add(mPlayerPosition);
                                     mPlayerPathPosition.Add(mLocalPosition);
                                 }
-                                lineDraw(rPlayer + playerId.ToString() + "LineRenderer" + futureNo, farFuture, futureDetails, rPlayerPathPosition.ToArray());
+                                if (EnableFutureFarDetails)
+                                    lineDraw(rPlayer + playerId.ToString() + "LineRenderer" + futureNo, farFuture, futureDetails, rPlayerPathPosition.ToArray());
                                 lineDraw(mPlayer + playerId.ToString() + "LineRenderer" + futureNo, farFuture, futureDetails, mPlayerPathPosition.ToArray());
                             }
                         }
@@ -330,12 +342,16 @@ public class MultiFuture : MonoBehaviour
     }
 
 
-    public static void visFuturePath(String Player, bool show)
+    public static void visFuturePath(String LineRenderObject, bool show)
     {
-        if (GameObject.Find(Player).GetComponent<LineRenderer>() != null)
+        GameObject lineRendererObject = GameObject.Find(LineRenderObject);
+        if (lineRendererObject.GetComponent<LineRenderer>() != null)
         {
-            LineRenderer line = GameObject.Find(Player).GetComponent<LineRenderer>();
-            line.enabled = show;
+            lineRendererObject.GetComponent<LineRenderer>().enabled = show;
+        }
+        if (lineRendererObject.GetComponent<MeshCollider>() != null)
+        {
+            lineRendererObject.GetComponent<MeshCollider>().enabled = show;
         }
     }
 
@@ -361,36 +377,57 @@ public class MultiFuture : MonoBehaviour
         GameObject Player = GameObject.Find(objectName);
         GameObject lr = Instantiate(emptyLineRenderer);
         lr.name = objectName + "LineRenderer" + futureNumber.ToString();
-        lr.transform.SetParent(Player.transform, true);
+
+        if (objectName.Contains("m"))
+        {
+            lr.transform.SetParent(Player.transform, true);
+            lr.transform.rotation = Quaternion.Euler(-90, 0, 0);
+        }
+        else if (objectName.Contains("r"))
+            lr.AddComponent<MeshCollider>();
+
         lr.AddComponent<LineRenderer>();
         LineRenderer line = lr.GetComponent<LineRenderer>();
         line.enabled = false;
     }
 
 
-    public static void lineDraw(String playerName, int farFuture, Vector3[] positions)
+    public static void lineDraw(String playerIdLineRendererFutureNo, int farFuture, Vector3[] positions)
     {
-        LineRenderer line = GameObject.Find(playerName).GetComponent<LineRenderer>();
-        line.positionCount = farFuture;
-        Material lineMaterial = Resources.Load<Material>("Material/Arrow");
-        lineMaterial.mainTextureScale = new Vector2(farFuture / 2, 1);
+        LineRenderer line = GameObject.Find(playerIdLineRendererFutureNo).GetComponent<LineRenderer>();
 
-        line.material = lineMaterial;
-        if (playerName.Contains("m"))
+        line.positionCount = farFuture;
+
+        Material arrowMaterial = Resources.Load<Material>("Material/Arrow");
+        arrowMaterial.mainTextureScale = new Vector2(farFuture / 2, 1);
+
+        Material lineMaterial = Resources.Load<Material>("Material/Line");
+
+        line.SetPositions(positions);
+
+        if (playerIdLineRendererFutureNo.Contains("m"))
         {
-            line.startWidth = 0.01f;
-            line.endWidth = 0.01f;
+            line.alignment = LineAlignment.TransformZ;
+
+            line.material = arrowMaterial;
+
+            line.startWidth = 0.0065f;
+            line.endWidth = 0.0065f;
         }
         else
         {
-            line.startWidth = 0.5f;
-            line.endWidth = 0.5f;
+            line.material = arrowMaterial;
+
+            line.startWidth = 0.4f;
+            line.endWidth = 0.4f;
+
+            UpdateColliderMesh(playerIdLineRendererFutureNo);  // update collider mesh might cause error: Resource ID out of range in SetResource
         }
-        line.SetPositions(positions);
+
     }
-    public static void lineDraw(String playerName, int farFuture, float futureDetails, Vector3[] positions)
+    public static void lineDraw(String playerIdLineRendererFutureNo, int farFuture, float futureDetails, Vector3[] positions)
     {
-        LineRenderer line = GameObject.Find(playerName).GetComponent<LineRenderer>();
+        LineRenderer line = GameObject.Find(playerIdLineRendererFutureNo).GetComponent<LineRenderer>();
 
         List<Vector3> detailedPositions = new List<Vector3>();
 
@@ -400,34 +437,113 @@ public class MultiFuture : MonoBehaviour
 
         detailedPositions.Add(positions[positions.Length - 1]);
 
-
-
         line.positionCount = farFuture;
-        Material lineMaterial = Resources.Load<Material>("Material/Arrow");
-        lineMaterial.mainTextureScale = new Vector2(farFuture / 2, 1);
 
-        line.material = lineMaterial;
-        if (playerName.Contains("m"))
+        Material arrowMaterial = Resources.Load<Material>("Material/Arrow");
+        arrowMaterial.mainTextureScale = new Vector2(farFuture / 2, 1);
+
+        Material lineMaterial = Resources.Load<Material>("Material/Line");
+
+        line.SetPositions(detailedPositions.ToArray());
+
+        if (playerIdLineRendererFutureNo.Contains("m"))
         {
-            line.startWidth = 0.008f;
-            line.endWidth = 0.008f;
+            line.alignment = LineAlignment.TransformZ;
+
+            line.material = arrowMaterial;
+
+            line.startWidth = 0.0065f;
+            line.endWidth = 0.0065f;
         }
         else
         {
+            line.material = arrowMaterial;
+
             line.startWidth = 0.4f;
             line.endWidth = 0.4f;
+
+            UpdateColliderMesh(playerIdLineRendererFutureNo);  // update collider mesh might cause error: Resource ID out of range in SetResource
         }
-        line.SetPositions(detailedPositions.ToArray());
+
     }
 
 
-    public static void futurePathVis(string rPlayer, bool show)
+    // public static void futurePathVis(string rPlayer, bool show)
+    // {
+    //     if (GameObject.Find(rPlayer).GetComponent<LineRenderer>() != null)
+    //     {
+    //         LineRenderer line = GameObject.Find(rPlayer).GetComponent<LineRenderer>();
+    //         line.enabled = show;
+    //     }
+    // }
+
+
+    // private static void UpdateCollider(string objectName)
+    // {
+    //     GameObject lrObject = GameObject.Find(objectName);
+    //     LineRenderer lineRenderer = lrObject.GetComponent<LineRenderer>();
+    //     // Set the position and size of the collider to match the line renderer
+    //     Vector3 lineStart = lineRenderer.GetPosition(0);
+    //     Vector3 lineEnd = lineRenderer.GetPosition(lineRenderer.positionCount - 1);
+
+    //     // Calculate the center position of the line
+    //     Vector3 colliderCenter = (lineStart + lineEnd) * 0.5f;
+
+    //     // Calculate the size of the collider based on the line length
+    //     float colliderSize = Vector3.Distance(lineStart, lineEnd);
+
+    //     BoxCollider boxCollider = lrObject.GetComponent<BoxCollider>();
+    //     // Update the collider position, size, and orientation
+    //     boxCollider.center = colliderCenter;
+    //     boxCollider.size = new Vector3(colliderSize, 0.1f, 0.5f);
+    // }
+
+    // private static void UpdateColliderMesh(LineRenderer lineRenderer, MeshCollider meshCollider, MeshFilter meshFilter)
+    private static void UpdateColliderMesh(string playerIdLineRendererFutureNo)
     {
-        if (GameObject.Find(rPlayer).GetComponent<LineRenderer>() != null)
-        {
-            LineRenderer line = GameObject.Find(rPlayer).GetComponent<LineRenderer>();
-            line.enabled = show;
-        }
-    }
-}
+        LineRenderer lineRenderer = GameObject.Find(playerIdLineRendererFutureNo).GetComponent<LineRenderer>();
+        MeshCollider meshCollider = GameObject.Find(playerIdLineRendererFutureNo).GetComponent<MeshCollider>();
 
+        Mesh colliderMesh = new Mesh();
+
+        lineRenderer.BakeMesh(colliderMesh);
+        meshCollider.sharedMesh = colliderMesh;
+    }
+
+    // public static void UpdateMiniatureLinePositionInRealTime()
+    // {
+    //     String rRightPlayer = "RightPlayer";
+    //     String mRightPlayer = "m" + rRightPlayer;
+    //     String rLeftPlayer = "LeftPlayer";
+    //     String mLeftPlayer = "m" + rLeftPlayer;
+    //     for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
+    //     {
+    //         for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+    //         {
+    //             LineRenderer mRightLineRenderer = GameObject.Find("mRightPlayer" + playerId.ToString() + "LineRenderer" + eachFutureNumber).GetComponent<LineRenderer>();
+    //             LineRenderer mLeftLineRenderer = GameObject.Find("mLeftPlayer" + playerId.ToString() + "LineRenderer" + eachFutureNumber).GetComponent<LineRenderer>();
+
+    //             Vector3[] mRightPositions = new Vector3[mRightLineRenderer.positionCount];
+    //             Vector3[] mLeftpositions = new Vector3[mLeftLineRenderer.positionCount];
+    //             mRightLineRenderer.GetPositions(mRightPositions);
+    //             mLeftLineRenderer.GetPositions(mLeftpositions);
+
+    //             List<Vector3> newRightPositions = new List<Vector3>();
+    //             List<Vector3> newLeftPositions = new List<Vector3>();
+
+    //             for (int i = 0; i < mRightPositions.Length; i++)
+    //             {
+    //                 newRightPositions.Add(GameObject.Find("MovableMiniature").transform.TransformPoint(mRightPositions[i]));
+    //             }
+
+    //             for (int i = 0; i < mLeftpositions.Length; i++)
+    //             {
+    //                 newLeftPositions.Add(GameObject.Find("MovableMiniature").transform.TransformPoint(mLeftpositions[i]));
+    //             }
+
+    //             lineDraw("mRightPlayer" + playerId.ToString() + "LineRenderer" + eachFutureNumber, MovableFootball.multiFutureFar, newRightPositions.ToArray());
+    //             lineDraw("mLeftPlayer" + playerId.ToString() + "LineRenderer" + eachFutureNumber, MovableFootball.multiFutureFar, newLeftPositions.ToArray());
+    //         }
+    //     }
+    // }
+}

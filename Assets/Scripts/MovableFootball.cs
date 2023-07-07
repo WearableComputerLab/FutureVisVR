@@ -57,11 +57,13 @@ public class MovableFootball : MonoBehaviour
 
     /*** Step Number ***/
     // [Range(0, 500)]
+    [Header("Step")]
     public int StepNum = 0;
     public bool controlStepNum = false;
     public static int step_num;
 
     /*** Each Team Players Number ***/
+    [Header("EachPlayerNumber")]
     public int EachPlayerNumber = 6;
     // public Dictionary<string, List<List<List<float>>>> New_Team = new Dictionary<string, List<List<List<float>>>>();
     public List<Dictionary<string, List<List<List<float>>>>> New_Team = new List<Dictionary<string, List<List<List<float>>>>>();
@@ -76,16 +78,18 @@ public class MovableFootball : MonoBehaviour
     public static bool showFuture = false;
     public static bool onlick = false;
 
+    [Header("Future Variables")]
+    public bool EnableFutureFarDetails = false;  // Enable mesh collider of each future path will not update every frame to avoid error: Resource ID out of range in SetResource
     /*** Far Future ***/
     public int FarFuture = 5;
     public static int multiFutureFar;
-
     [Range(0.1f, 1)]
     public float FutureDetails = 0.5f;
     public int futureAmount = 2;
     public static int multiFutureAmount;
     public static int conditionFutureAmount;
 
+    [Header("Step To Calculate")]
     public int stepToCalculate = 3;
 
     /*** Get Real World Positions ***/
@@ -96,6 +100,7 @@ public class MovableFootball : MonoBehaviour
 
     /*** Heatmap ***/
     public static bool showHeatmap = false;
+    [Header("Heatmap Variables")]
     public Gradient heatmapGradient;
     [Range(-1, 1)]
     public float Saturation = 0;
@@ -240,22 +245,33 @@ public class MovableFootball : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (!controlStepNum && !gamePlay && UserStudyInterface.startCondition)
-            StepNum = step_num;
+        if (!controlStepNum && !gamePlay && UserStudyInterface.startCondition)  // if not in controlStepNum mode, game not player, and user study starts, User Study step will control MovableFootball step
+            StepNum = step_num;  //User Study controls step_num, step_num control StepNum in MovableFootball
+
         if (UserStudyInterface.startCondition)
+        {
             multiFutureAmount = conditionFutureAmount;
+            FarFuture = 15;
+        }
         else
             multiFutureAmount = futureAmount;
         multiFutureFar = FarFuture;
-        MultiFuture.updateFutureFar(StepNum, FarFuture, FutureDetails);
+
+        if (EnableFutureFarDetails)
+            MultiFuture.updateFutureFarDetails(StepNum, FarFuture, FutureDetails, EnableFutureFarDetails);
+        else
+            MultiFuture.updateFutureFarDetails(StepNum, FarFuture, FutureDetails, EnableFutureFarDetails);
+
         MultiFuture.updateFutureAmount(showFuture);
+
         /*** Movable Miniature***/
         // GameObject.Find("MovableMiniature").transform.position = new Vector3(mainCameraObject.transform.position.x, 0, mainCameraObject.transform.position.z + 0.2f);
         // GameUserInterface.updateGUIView();
         // MiniatureView.updateMiniatureView(showMiniatureView);
         MiniatureView.updateMovableMiniature(showMovableMiniature);
-        /*** Movable Buttons***/
 
+        /*** Update Miniature Line Position In RealTime ***/
+        // MultiFuture.UpdateMiniatureLinePositionInRealTime();
 
         // updateHeatmapTime = updateHeatmapTime + 1f * Time.deltaTime;
         // if (updateHeatmapTime > 0.2)
@@ -285,7 +301,7 @@ public class MovableFootball : MonoBehaviour
                 time = 0f;
 
                 player(originalGame, StepNum);
-                MultiFuture.updateFutureInfo(StepNum, FarFuture, showFuture);
+                MultiFuture.updateFutureInfoAtCaculatedStep(StepNum, FarFuture, showFuture);
                 realTimeHeatmap(stepMultiFuture, futureAmount, FarFuture, StepNum, showHeatmap);
 
                 StepNum += 1;
@@ -299,7 +315,7 @@ public class MovableFootball : MonoBehaviour
                 // MultiFuture.updateFutureInfo(StepNum, FarFuture, showFuture);
                 // player(originalGame, StepNum);
                 player(originalGame, StepNum);
-                MultiFuture.updateFutureInfo(StepNum, FarFuture, showFuture);
+                MultiFuture.updateFutureInfoAtCaculatedStep(StepNum, FarFuture, showFuture);
                 realTimeHeatmap(stepMultiFuture, futureAmount, FarFuture, StepNum, showHeatmap);
             }
         }
