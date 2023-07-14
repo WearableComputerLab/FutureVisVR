@@ -45,7 +45,7 @@ public class GoldHaloEffect : MonoBehaviour
             // haloLight.color = new Color(255, 212, 0, 255);
             // haloLight.renderMode = LightRenderMode.ForcePixel;
             mHaloLight.type = LightType.Point;
-            mHaloLight.range = 0.008f;
+            mHaloLight.range = 0.005f;  //original is 0.008f
             mHaloLight.intensity = 300;
             mHaloLight.color = new Color(255, 212, 0, 255);
             mHaloLight.renderMode = LightRenderMode.ForcePixel;
@@ -65,10 +65,10 @@ public class GoldHaloEffect : MonoBehaviour
             Destroy(mTemp_capsule);
             mHaloObject.AddComponent<MeshFilter>().mesh = mCapsuleMesh;
             mHaloObject.transform.rotation = Quaternion.Euler(0, 0, 0);
-            mHaloObject.transform.localScale = new Vector3(100f, 100f, 100f);
+            // mHaloObject.transform.localScale = new Vector3(100f, 100f, 100f);
+            mHaloObject.transform.localScale = new Vector3(60f, 80f, 60f);
             mHaloObject.transform.localPosition = new Vector3(0, 0.5f, 0);
 
-            // player.transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
             mPlayer.transform.localScale = new Vector3(0.0001f, 0.0001f, 0.0001f);
         }
     }
@@ -106,5 +106,23 @@ public class GoldHaloEffect : MonoBehaviour
         // GameObject.Find(previousObserver).transform.localScale = new Vector3(0.65f, 2.2f, 0.65f);
         GameObject.Find(observer).transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
         // previousObserver = observer;
+    }
+
+    public static void hideOtherPlayers(string observer, string highlightedPlayer)
+    {
+        for (int i = 0; i < 11; i++)
+        {
+            if (("RightPlayer" + i.ToString() != observer) || ("RightPlayer" + i.ToString() != highlightedPlayer) || ("LeftPlayer" + i.ToString() != observer) || ("LeftPlayer" + i.ToString() != highlightedPlayer))
+            {
+                for (int eachFutureNumber = 1; eachFutureNumber <= MovableFootball.multiFutureAmount; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                {
+                    MultiFuture.visFuturePath("RightPlayer" + i.ToString() + "LineRenderer" + eachFutureNumber, false);
+                    MultiFuture.visFuturePath("mRightPlayer" + i.ToString() + "LineRenderer" + eachFutureNumber, false);
+                    MultiFuture.visFuturePath("LeftPlayer" + i.ToString() + "LineRenderer" + eachFutureNumber, false);
+                    MultiFuture.visFuturePath("mLeftPlayer" + i.ToString() + "LineRenderer" + eachFutureNumber, false);
+                }
+
+            }
+        }
     }
 }

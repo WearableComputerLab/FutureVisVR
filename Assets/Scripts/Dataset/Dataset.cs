@@ -15,6 +15,8 @@ public class Dataset : ScriptableObject
     public static List<List<int>> Yes_Time_Limit_5_Arrows_Trials = new List<List<int>>();
     public static List<List<int>> Yes_Time_Limit_Heatmap_Trials = new List<List<int>>();
 
+    public static List<List<int>> Training_2A_5A_Heatmap_Trials = new List<List<int>>();
+
     // public static List<List<int>> ShuffledTrials = new List<List<int>>();
 
     public static void startDataset()
@@ -43,15 +45,23 @@ public class Dataset : ScriptableObject
 
         ***/
 
-        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 1, 2, 0, 0 });
-        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 3, 1, 0, 1 });
-        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 10, 12, 0, 2 });
-        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 2, 0, 0 });
-        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 3, 1, 0, 1 });
-        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 10, 12, 0, 2 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 2, 0, 0 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 3, 1, 0, 1 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 10, 12, 0, 2 });
+        Training_2A_5A_Heatmap_Trials.Add(new List<int> { 1, 2, 0, 0 });
+        Training_2A_5A_Heatmap_Trials.Add(new List<int> { 3, 1, 0, 1 });
+        Training_2A_5A_Heatmap_Trials.Add(new List<int> { 10, 12, 0, 2 });
+        Training_2A_5A_Heatmap_Trials.Add(new List<int> { 1, 2, 0, 0 });
+        Training_2A_5A_Heatmap_Trials.Add(new List<int> { 3, 1, 0, 1 });
+        Training_2A_5A_Heatmap_Trials.Add(new List<int> { 10, 12, 0, 2 });
+
+
+        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 1, 2, 0, 0 });
+        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 3, 1, 0, 1 });
+        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 10, 12, 0, 2 });
+        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 2, 0, 0 });
+        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 3, 1, 0, 1 });
+        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 10, 12, 0, 2 });
+        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 2, 0, 0 });
+        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 3, 1, 0, 1 });
+        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 10, 12, 0, 2 });
 
         // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 1, 2, 0, 0 });
         // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 3, 1, 0, 1 });
@@ -63,232 +73,232 @@ public class Dataset : ScriptableObject
         // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 3, 1, 0, 1 });
         // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 10, 12, 0, 2 });
 
-        // // (Far, Dense)
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 16, 1, 0, 0 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 17, 0, 1 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 16, 13, 20, 2 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 16, 15, 20, 3 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 15, 90, 4 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 8, 6, 160, 5 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 14, 6, 340, 6 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 8, 170, 7 });
-        // // (Far, Scattered)
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 2, 6, 260, 8 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 4, 11, 80, 9 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 18, 11, 80, 10 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 18, 15, 90, 11 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 2, 5, 110, 12 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 9, 3, 160, 13 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 12, 19, 160, 14 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 8, 210, 15 });
-        // // (Close, Dense)
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 15, 20, 16 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 1, 12, 30, 17 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 12, 30, 18 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 12, 13, 40, 19 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 11, 19, 50, 20 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 2, 70, 21 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 5, 12, 160, 22 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 1, 180, 23 });
-        // // (Close, Scattered)
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 15, 90, 24 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 7, 5, 90, 25 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 9, 15, 90, 26 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 14, 5, 110, 27 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 13, 1, 110, 28 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 7, 19, 160, 29 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 19, 3, 160, 30 });
-        // No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 3, 19, 160, 31 });
+        // (Far, Dense)
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 16, 1, 0, 0 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 17, 0, 1 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 16, 13, 20, 2 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 16, 15, 20, 3 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 15, 90, 4 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 8, 6, 160, 5 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 14, 6, 340, 6 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 8, 170, 7 });
+        // (Far, Scattered)
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 2, 6, 260, 8 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 4, 11, 80, 9 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 18, 11, 80, 10 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 18, 15, 90, 11 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 2, 5, 110, 12 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 9, 3, 160, 13 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 12, 19, 160, 14 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 8, 210, 15 });
+        // (Close, Dense)
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 15, 20, 16 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 1, 12, 30, 17 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 12, 30, 18 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 12, 13, 40, 19 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 11, 19, 50, 20 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 2, 70, 21 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 5, 12, 160, 22 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 1, 180, 23 });
+        // (Close, Scattered)
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 15, 90, 24 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 7, 5, 90, 25 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 9, 15, 90, 26 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 18, 16, 20, 27 }); //original: {14, 5, 110, 27}
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 13, 1, 110, 28 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 7, 19, 160, 29 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 19, 3, 160, 30 });
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 3, 19, 160, 31 });
 
 
-        // // (Far, Dense)
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 6, 0, 0 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 16, 13, 20, 1 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 19, 13, 20, 2 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 11, 12, 20, 3 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 10, 1, 40, 4 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 4, 11, 50, 5 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 13, 14, 80, 6 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 13, 10, 120, 7 });
-        // // (Far, Scattered)
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 7, 6, 0, 8 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 5, 6, 0, 9 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 8, 6, 0, 10 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 5, 19, 50, 11 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 11, 5, 120, 12 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 6, 3, 160, 13 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 6, 19, 160, 14 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 20, 8, 160, 15 });
-        // // (Close, Dense)
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 6, 10, 16 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 1, 20, 17 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 13, 1, 60, 18 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 6, 1, 60, 19 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 13, 1, 110, 20 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 6, 1, 180, 21 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 9, 15, 210, 22 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 5, 7, 360, 23 });
-        // // (Close, Scattered)
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 2, 6, 0, 24 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 18, 15, 20, 25 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 12, 1, 60, 26 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 18, 5, 60, 27 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 15, 11, 80, 28 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 15, 11, 90, 29 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 7, 5, 90, 30 });
-        // No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 12, 13, 100, 31 });
+        // (Far, Dense)
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 6, 0, 0 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 16, 13, 20, 1 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 19, 13, 20, 2 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 11, 12, 20, 3 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 10, 1, 40, 4 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 4, 11, 50, 5 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 13, 14, 80, 6 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 13, 10, 120, 7 });
+        // (Far, Scattered)
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 7, 6, 0, 8 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 5, 6, 0, 9 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 8, 6, 0, 10 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 5, 19, 50, 11 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 11, 5, 120, 12 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 6, 3, 160, 13 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 6, 19, 160, 14 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 20, 8, 160, 15 });
+        // (Close, Dense)
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 6, 10, 16 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 1, 20, 17 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 13, 1, 60, 18 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 6, 1, 60, 19 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 13, 1, 110, 20 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 6, 1, 180, 21 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 9, 15, 210, 22 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 5, 7, 360, 23 });
+        // (Close, Scattered)
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 2, 6, 0, 24 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 18, 15, 20, 25 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 12, 1, 60, 26 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 18, 5, 60, 27 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 15, 11, 80, 28 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 15, 11, 90, 29 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 7, 5, 90, 30 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 12, 13, 100, 31 });
 
 
-        // // (Far, Dense)
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 11, 0, 0 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 18, 0, 1 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 1, 0, 2 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 18, 0, 3 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 5, 20, 4 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 3, 20, 5 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 4, 30, 6 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 12, 5, 40, 7 });
-        // // (Far, Scattered)
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 8, 0, 8 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 4, 0, 9 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 3, 0, 10 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 5, 0, 11 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 16, 12, 0, 12 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 13, 0, 13 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 13, 0, 14 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 5, 1, 0, 15 });
-        // // (Close, Dense)
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 7, 30, 16 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 12, 6, 50, 17 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 6, 90, 18 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 15, 6, 100, 19 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 6, 100, 20 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 6, 100, 21 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 9, 220, 22 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 16, 15, 1410, 23 });
-        // // (Close, Scattered)
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 16, 11, 0, 24 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 11, 0, 25 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 16, 0, 26 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 1, 0, 27 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 1, 10, 28 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 3, 5, 20, 29 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 10, 8, 70, 30 });
-        // No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 5, 90, 31 });
+        // (Far, Dense)
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 11, 0, 0 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 18, 0, 1 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 1, 0, 2 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 18, 0, 3 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 5, 20, 4 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 3, 20, 5 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 4, 30, 6 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 12, 5, 40, 7 });
+        // (Far, Scattered)
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 8, 0, 8 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 4, 0, 9 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 3, 0, 10 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 5, 0, 11 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 16, 12, 0, 12 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 13, 0, 13 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 13, 0, 14 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 5, 1, 0, 15 });
+        // (Close, Dense)
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 7, 30, 16 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 12, 6, 50, 17 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 6, 90, 18 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 15, 6, 100, 19 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 6, 100, 20 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 6, 100, 21 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 9, 220, 22 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 16, 15, 1410, 23 });
+        // (Close, Scattered)
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 16, 11, 0, 24 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 11, 0, 25 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 16, 0, 26 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 1, 0, 27 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 1, 10, 28 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 3, 5, 20, 29 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 10, 8, 70, 30 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 5, 90, 31 });
 
 
-        // // (Far, Dense)
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 7, 11, 0, 0 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 2, 12, 20, 1 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 7, 8, 20, 2 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 2, 15, 90, 3 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 13, 5, 110, 4 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 1, 5, 110, 5 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 16, 5, 110, 6 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 15, 8, 170, 7 });
-        // // (Far, Scattered)
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 3, 11, 80, 8 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 11, 5, 110, 9 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 3, 160, 10 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 19, 160, 11 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 18, 8, 210, 12 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 1, 8, 420, 13 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 6, 470, 14 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 5, 6, 690, 15 });
-        // // (Close, Dense)
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 9, 19, 20, 16 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 1, 2, 30, 17 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 2, 30, 18 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 12, 2, 50, 19 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 2, 12, 160, 20 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 9, 1, 180, 21 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 11, 15, 210, 22 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 1, 210, 23 });
-        // // (Close, Scattered)
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 2, 5, 90, 24 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 1, 110, 25 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 5, 3, 160, 26 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 9, 19, 160, 27 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 8, 160, 28 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 20, 8, 160, 29 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 4, 6, 160, 30 });
-        // Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 20, 8, 170, 31 });
+        // (Far, Dense)
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 7, 11, 0, 0 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 2, 12, 20, 1 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 7, 18, 20, 2 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 2, 15, 90, 3 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 13, 5, 110, 4 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 1, 5, 110, 5 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 16, 5, 110, 6 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 15, 8, 170, 7 });
+        // (Far, Scattered)
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 3, 11, 80, 8 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 11, 5, 110, 9 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 3, 160, 10 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 19, 160, 11 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 18, 8, 210, 12 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 1, 8, 420, 13 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 6, 470, 14 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 5, 6, 690, 15 });
+        // (Close, Dense)
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 9, 19, 20, 16 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 1, 2, 30, 17 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 2, 30, 18 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 12, 2, 50, 19 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 2, 12, 160, 20 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 9, 1, 180, 21 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 11, 15, 210, 22 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 1, 210, 23 });
+        // (Close, Scattered)
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 11, 6, 200, 24 }); //original: { 2, 5, 90, 24 }
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 6, 1, 110, 25 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 16, 13, 210, 26 }); //original: { 5, 3, 160, 26 }
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 12, 5, 220, 27 }); //original: { 9, 19, 160, 27 }
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 8, 160, 28 });
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 16, 13, 160, 29 }); //original: { 20, 8, 160, 29 }
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 16, 5, 250, 30 }); //original: { 4, 6, 160, 30 }
+        Yes_Time_Limit_2_Arrows_Trials.Add(new List<int> { 5, 13, 250, 31 }); //original: { 20, 8, 170, 31 }
 
 
-        // // (Far, Dense)
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 2, 12, 20, 0 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 3, 1, 40, 1 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 19, 1, 40, 2 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 3, 1, 60, 3 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 5, 1, 60, 4 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 14, 80, 5 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 2, 10, 120, 6 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 3, 160, 7 });
-        // // (Far, Scattered)
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 3, 6, 0, 8 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 13, 12, 20, 9 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 14, 19, 50, 10 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 3, 140, 11 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 7, 3, 140, 12 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 8, 150, 13 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 9, 3, 160, 14 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 12, 19, 160, 15 });
-        // // (Close, Dense)
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 7, 1, 60, 16 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 2, 70, 17 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 6, 13, 100, 18 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 2, 12, 160, 19 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 9, 1, 180, 20 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 14, 6, 210, 21 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 11, 15, 210, 22 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 14, 1, 20, 23 });
-        // // (Close, Scattered)
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 6, 0, 24 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 18, 13, 20, 25 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 8, 4, 20, 26 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 17, 80, 27 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 9, 15, 90, 28 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 14, 5, 100, 29 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 13, 100, 30 });
-        // Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 1, 110, 31 });
+        // (Far, Dense)
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 2, 12, 20, 0 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 3, 1, 40, 1 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 19, 1, 40, 2 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 3, 1, 60, 3 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 5, 1, 60, 4 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 14, 80, 5 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 2, 10, 120, 6 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 3, 160, 7 });
+        // (Far, Scattered)
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 3, 6, 0, 8 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 13, 12, 20, 9 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 14, 19, 50, 10 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 3, 140, 11 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 7, 3, 140, 12 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 8, 150, 13 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 9, 3, 160, 14 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 12, 19, 160, 15 });
+        // (Close, Dense)
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 7, 1, 60, 16 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 2, 70, 17 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 6, 13, 100, 18 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 2, 12, 160, 19 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 9, 1, 180, 20 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 14, 6, 210, 21 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 11, 15, 210, 22 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 14, 1, 20, 23 });
+        // (Close, Scattered)
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 6, 0, 24 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 18, 13, 20, 25 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 8, 4, 20, 26 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 17, 80, 27 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 9, 15, 90, 28 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 14, 5, 100, 29 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 1, 13, 100, 30 });
+        Yes_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 1, 110, 31 });
 
 
-        // // (Far, Dense)
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 5, 8, 90, 0 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 7, 120, 1 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 8, 7, 120, 2 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 15, 19, 160, 3 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 19, 160, 4 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 19, 160, 5 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 9, 14, 160, 6 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 14, 160, 7 });
-        // // (Far, Scattered)
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 8, 0, 8 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 5, 0, 9 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 3, 0, 10 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 16, 18, 0, 11 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 15, 0, 12 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 18, 0, 13 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 12, 0, 14 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 8, 1, 0, 15 });
-        // // (Close, Dense)
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 7, 30, 16 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 6, 90, 17 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 13, 6, 90, 18 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 6, 90, 19 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 9, 6, 100, 20 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 13, 6, 110, 21 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 15, 9, 220, 22 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 16, 630, 23 });
-        // // (Close, Scattered)
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 1, 0, 24 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 1, 10, 25 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 5, 3, 10, 26 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 4, 60, 27 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 3, 11, 60, 28 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 5, 80, 29 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 10, 8, 80, 30 });
-        // Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 9, 110, 31 });
+        // (Far, Dense)
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 5, 8, 90, 0 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 7, 120, 1 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 8, 7, 120, 2 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 15, 19, 160, 3 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 19, 160, 4 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 19, 160, 5 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 9, 14, 160, 6 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 14, 160, 7 });
+        // (Far, Scattered)
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 8, 0, 8 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 5, 0, 9 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 3, 0, 10 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 16, 18, 0, 11 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 15, 0, 12 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 18, 0, 13 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 12, 0, 14 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 8, 1, 0, 15 });
+        // (Close, Dense)
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 7, 30, 16 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 6, 90, 17 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 13, 6, 90, 18 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 6, 90, 19 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 9, 6, 100, 20 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 13, 6, 110, 21 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 15, 9, 220, 22 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 16, 630, 23 });
+        // (Close, Scattered)
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 1, 0, 24 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 1, 10, 25 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 5, 3, 10, 26 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 4, 60, 27 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 3, 11, 60, 28 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 5, 80, 29 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 10, 8, 80, 30 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 9, 110, 31 });
 
 
 

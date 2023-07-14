@@ -272,17 +272,93 @@ public class MultiFuture : MonoBehaviour
         }
     }
 
-    public static void updateFutureAmount(bool futureVisShow)
+    public static void updateFutureAmount(bool futureVisShow, bool EnableFutureFarDetails, bool StartExperiment)
     {
         String rRightPlayer = "RightPlayer";
         String mRightPlayer = "m" + rRightPlayer;
         String rLeftPlayer = "LeftPlayer";
         String mLeftPlayer = "m" + rLeftPlayer;
-        for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
+
+        if (StartExperiment)
         {
+            // string observer = UserStudyInterface.observer;
+            string highlightedPlayer = UserStudyInterface.highlightedPlayer;
+
             if (futureVisShow)
             {
-                if (MovableFootball.multiFutureAmount == futureNumber)
+                for (int i = 0; i < 11; i++)
+                {
+                    if (("RightPlayer" + i.ToString() == highlightedPlayer) || ("LeftPlayer" + i.ToString() == highlightedPlayer))
+                    {
+                        for (int eachFutureNumber = 1; eachFutureNumber <= MovableFootball.multiFutureAmount; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                        {
+                            MultiFuture.visFuturePath(highlightedPlayer + "LineRenderer" + eachFutureNumber, true);
+                            MultiFuture.visFuturePath("m" + highlightedPlayer + "LineRenderer" + eachFutureNumber, true);
+                        }
+                    }
+                    else
+                    {
+                        for (int eachFutureNumber = 1; eachFutureNumber <= MovableFootball.multiFutureAmount; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                        {
+                            MultiFuture.visFuturePath("RightPlayer" + i.ToString() + "LineRenderer" + eachFutureNumber, false);
+                            MultiFuture.visFuturePath("mRightPlayer" + i.ToString() + "LineRenderer" + eachFutureNumber, false);
+                            MultiFuture.visFuturePath("LeftPlayer" + i.ToString() + "LineRenderer" + eachFutureNumber, false);
+                            MultiFuture.visFuturePath("mLeftPlayer" + i.ToString() + "LineRenderer" + eachFutureNumber, false);
+                        }
+                    }
+                }
+            }
+            else
+            {
+                for (int i = 0; i < 11; i++)
+                {
+                    for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                    {
+                        visFuturePath(rRightPlayer + i.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                        visFuturePath(mRightPlayer + i.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                        visFuturePath(rLeftPlayer + i.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                        visFuturePath(mLeftPlayer + i.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                    }
+                }
+            }
+
+        }
+
+        if (EnableFutureFarDetails)
+        {
+            for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
+            {
+                if (futureVisShow)
+                {
+                    if (MovableFootball.multiFutureAmount == futureNumber)
+                    {
+                        for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                        {
+                            visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                            visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                            visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                            visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
+                        }
+                    }
+                    if (MovableFootball.multiFutureAmount < futureNumber)
+                    {
+                        for (int eachFutureNumber = 1; eachFutureNumber <= MovableFootball.multiFutureAmount; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                        {
+                            visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, true);
+                            visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, true);
+                            visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, true);
+                            visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, true);
+                        }
+                        for (int eachFutureNumber = MovableFootball.multiFutureAmount + 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
+                        {
+                            visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, false);
+                            visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, false);
+                            visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, false);
+                            visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, false);
+                        }
+                    }
+                }
+                else
                 {
                     for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
                     {
@@ -291,33 +367,6 @@ public class MultiFuture : MonoBehaviour
                         visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
                         visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
                     }
-                }
-                if (MovableFootball.multiFutureAmount < futureNumber)
-                {
-                    for (int eachFutureNumber = 1; eachFutureNumber <= MovableFootball.multiFutureAmount; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
-                    {
-                        visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, true);
-                        visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, true);
-                        visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, true);
-                        visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, true);
-                    }
-                    for (int eachFutureNumber = MovableFootball.multiFutureAmount + 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
-                    {
-                        visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, false);
-                        visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, false);
-                        visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, false);
-                        visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, false);
-                    }
-                }
-            }
-            else
-            {
-                for (int eachFutureNumber = 1; eachFutureNumber <= futureNumber; eachFutureNumber++)  // start from RightPlayer0LineRenderer_1
-                {
-                    visFuturePath(rRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-                    visFuturePath(mRightPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-                    visFuturePath(rLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
-                    visFuturePath(mLeftPlayer + playerId.ToString() + "LineRenderer" + eachFutureNumber, futureVisShow);
                 }
             }
         }
@@ -401,18 +450,21 @@ public class MultiFuture : MonoBehaviour
         Material arrowMaterial = Resources.Load<Material>("Material/Arrow");
         arrowMaterial.mainTextureScale = new Vector2(farFuture / 2, 1);
 
+        Material arrowMiniatureMaterial = Resources.Load<Material>("Material/Arrow_Miniature");
+        arrowMiniatureMaterial.mainTextureScale = new Vector2(farFuture / 2, 1);
+
         Material lineMaterial = Resources.Load<Material>("Material/Line");
 
         line.SetPositions(positions);
 
         if (playerIdLineRendererFutureNo.Contains("m"))
         {
-            line.alignment = LineAlignment.TransformZ;
+            // line.alignment = LineAlignment.TransformZ;
 
-            line.material = arrowMaterial;
+            line.material = arrowMiniatureMaterial;
 
-            line.startWidth = 0.0065f;
-            line.endWidth = 0.0065f;
+            line.startWidth = 0.007f;
+            line.endWidth = 0.007f;
         }
         else
         {
@@ -442,18 +494,21 @@ public class MultiFuture : MonoBehaviour
         Material arrowMaterial = Resources.Load<Material>("Material/Arrow");
         arrowMaterial.mainTextureScale = new Vector2(farFuture / 2, 1);
 
+        Material arrowMiniatureMaterial = Resources.Load<Material>("Material/Arrow_Miniature");
+        arrowMiniatureMaterial.mainTextureScale = new Vector2(farFuture / 2, 1);
+
         Material lineMaterial = Resources.Load<Material>("Material/Line");
 
         line.SetPositions(detailedPositions.ToArray());
 
         if (playerIdLineRendererFutureNo.Contains("m"))
         {
-            line.alignment = LineAlignment.TransformZ;
+            // line.alignment = LineAlignment.TransformZ;
 
-            line.material = arrowMaterial;
+            line.material = arrowMiniatureMaterial;
 
-            line.startWidth = 0.0065f;
-            line.endWidth = 0.0065f;
+            line.startWidth = 0.007f;
+            line.endWidth = 0.007f;
         }
         else
         {

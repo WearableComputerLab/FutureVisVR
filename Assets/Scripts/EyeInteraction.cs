@@ -30,25 +30,11 @@ public class EyeInteraction : MonoBehaviour
 
         if (Physics.Raycast(transform.position, rayCastDirection, out hit, Mathf.Infinity) && UserStudyInterface.startEyeTracking)
         {
-            // hitObject.transform.position = hit.point;
-            EyeTrackingPitchPositions.Add(hit.point);
-
-            print("Hit game object: " + hit.collider.gameObject + " ;   Hit collider tag: " + hit.collider.tag + " ;   Hit Position: " + hit.point);
-
-            // print("Check if the hit object is the line renderer: " + hit.collider.gameObject);
-
-            if (hit.collider.tag == "PitchHeatmap")
-            {
-                // print("Hit Collider Tag: " + hit.collider.tag + " *** Hit Point: " + hit.point);
+            if (hit.collider.gameObject.name != "OculusCursor")
                 EyeTrackingPitchPositions.Add(hit.point);
-            }
-            else if (hit.collider.tag == "Miniature")
-            {
-                // print("Hit Collider Tag: Miniature");
-                EyeTrackingMiniatureTimer += Time.deltaTime;
-                // EyeTrackingMiniatureTimes++;
+            EyeTrackingMiniatureTimer += Time.deltaTime;
 
-            }
+            // print("Hit game object: " + hit.collider.gameObject + " ;   Hit collider tag: " + hit.collider.tag + " ;   Hit Position: " + hit.point);
         }
         else if (!UserStudyInterface.startEyeTracking)
         {
@@ -59,6 +45,4 @@ public class EyeInteraction : MonoBehaviour
 
         }
     }
-
-
 }

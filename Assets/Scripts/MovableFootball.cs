@@ -248,7 +248,7 @@ public class MovableFootball : MonoBehaviour
         if (!controlStepNum && !gamePlay && UserStudyInterface.startCondition)  // if not in controlStepNum mode, game not player, and user study starts, User Study step will control MovableFootball step
             StepNum = step_num;  //User Study controls step_num, step_num control StepNum in MovableFootball
 
-        if (UserStudyInterface.startCondition)
+        if (UserStudyInterface.startCondition || UserStudyInterface.startTraining)
         {
             multiFutureAmount = conditionFutureAmount;
             FarFuture = 15;
@@ -257,12 +257,12 @@ public class MovableFootball : MonoBehaviour
             multiFutureAmount = futureAmount;
         multiFutureFar = FarFuture;
 
-        if (EnableFutureFarDetails)
-            MultiFuture.updateFutureFarDetails(StepNum, FarFuture, FutureDetails, EnableFutureFarDetails);
-        else
-            MultiFuture.updateFutureFarDetails(StepNum, FarFuture, FutureDetails, EnableFutureFarDetails);
+        // if (EnableFutureFarDetails)
+        //     MultiFuture.updateFutureFarDetails(StepNum, FarFuture, FutureDetails, EnableFutureFarDetails);
+        // else
+        MultiFuture.updateFutureFarDetails(StepNum, FarFuture, FutureDetails, EnableFutureFarDetails);
 
-        MultiFuture.updateFutureAmount(showFuture);
+        MultiFuture.updateFutureAmount(showFuture, EnableFutureFarDetails, (UserStudyInterface.startCondition || UserStudyInterface.startTraining));
 
         /*** Movable Miniature***/
         // GameObject.Find("MovableMiniature").transform.position = new Vector3(mainCameraObject.transform.position.x, 0, mainCameraObject.transform.position.z + 0.2f);
@@ -302,7 +302,7 @@ public class MovableFootball : MonoBehaviour
 
                 player(originalGame, StepNum);
                 MultiFuture.updateFutureInfoAtCaculatedStep(StepNum, FarFuture, showFuture);
-                realTimeHeatmap(stepMultiFuture, futureAmount, FarFuture, StepNum, showHeatmap);
+                realTimeHeatmap(stepMultiFuture, futureAmount, FarFuture, StepNum, showHeatmap, (UserStudyInterface.startCondition || UserStudyInterface.startTraining));
 
                 StepNum += 1;
             }
@@ -316,76 +316,96 @@ public class MovableFootball : MonoBehaviour
                 // player(originalGame, StepNum);
                 player(originalGame, StepNum);
                 MultiFuture.updateFutureInfoAtCaculatedStep(StepNum, FarFuture, showFuture);
-                realTimeHeatmap(stepMultiFuture, futureAmount, FarFuture, StepNum, showHeatmap);
+                realTimeHeatmap(stepMultiFuture, futureAmount, FarFuture, StepNum, showHeatmap, (UserStudyInterface.startCondition || UserStudyInterface.startTraining));
             }
         }
     }
 
-    public void realTimeHeatmap(Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> stepMultiFuture, int futureAmount, int futureFar, int currentStep, bool showHeatmap)
+    public void realTimeHeatmap(Dictionary<string, List<Dictionary<string, List<List<List<float>>>>>> stepMultiFuture, int futureAmount, int futureFar, int currentStep, bool showHeatmap, bool StartExperiment)
     {
         foreach (var stepFuturesPair in stepMultiFuture)
         {
             if (stepFuturesPair.Key.Replace("Step", String.Empty).Equals(currentStep.ToString()))
             {
-                List<List<Vector2>> playersPositions = new List<List<Vector2>>();
-                List<List<Vector2>> mplayersPositions = new List<List<Vector2>>();
-                for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
+                if (StartExperiment)
                 {
-                    List<Vector2> rightPlayer = new List<Vector2>();
-                    List<Vector2> leftPlayer = new List<Vector2>();
-                    List<Vector2> mRightPlayer = new List<Vector2>();
-                    List<Vector2> mLeftPlayer = new List<Vector2>();
-                    for (int i = 0; i < futureAmount; i++)
+                    List<List<Vector2>> playersPositions = new List<List<Vector2>>();
+                    List<List<Vector2>> mplayersPositions = new List<List<Vector2>>();
+                    for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
                     {
-                        for (int j = 0; j < futureFar; j++)
+                        if ("RightPlayer" + playerId.ToString() == UserStudyInterface.highlightedPlayer)
                         {
-                            List<float> position = stepMultiFuture[stepFuturesPair.Key][i]["RightTeamLocations"][playerId][j];
-                            rightPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
-                            mRightPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
-                        }
-                        for (int j = 0; j < futureFar; j++)
-                        {
-                            List<float> position = stepMultiFuture[stepFuturesPair.Key][i]["LeftTeamLocations"][playerId][j];
-                            leftPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
-                            mLeftPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
-                        }
+                            List<Vector2> highlightedPlayer = new List<Vector2>();
+                            List<Vector2> mhighlightedPlayer = new List<Vector2>();
+                            for (int i = 0; i < futureAmount; i++)
+                            {
+                                for (int j = 0; j < futureFar; j++)
+                                {
+                                    List<float> position = stepMultiFuture[stepFuturesPair.Key][i]["RightTeamLocations"][playerId][j];
+                                    highlightedPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
+                                    mhighlightedPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
+                                }
+                            }
+                            playersPositions.Add(highlightedPlayer);
+                            mplayersPositions.Add(mhighlightedPlayer);
 
-                        // foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["RightTeamLocations"][playerId])
-                        // {
-                        //     // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
-                        //     rightPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
-                        // }
-                        // foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["LeftTeamLocations"][playerId])
-                        // {
-                        //     // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
-                        //     leftPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
-                        // }
+                        }
+                        else if ("LeftPlayer" + playerId.ToString() == UserStudyInterface.highlightedPlayer)
+                        {
+                            List<Vector2> highlightedPlayer = new List<Vector2>();
+                            List<Vector2> mhighlightedPlayer = new List<Vector2>();
+                            for (int i = 0; i < futureAmount; i++)
+                            {
+                                for (int j = 0; j < futureFar; j++)
+                                {
+                                    List<float> position = stepMultiFuture[stepFuturesPair.Key][i]["LeftTeamLocations"][playerId][j];
+                                    highlightedPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
+                                    mhighlightedPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
+                                }
+                            }
+                            playersPositions.Add(highlightedPlayer);
+                            mplayersPositions.Add(mhighlightedPlayer);
+                        }
                     }
-                    playersPositions.Add(rightPlayer);
-                    playersPositions.Add(leftPlayer);
-
-                    // List<Vector2> mRightPlayer = new List<Vector2>();
-                    // List<Vector2> mLeftPlayer = new List<Vector2>();
-                    // for (int i = 0; i < futureAmount; i++)
-                    // {
-
-                    //     foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["RightTeamLocations"][playerId])
-                    //     {
-                    //         // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
-                    //         mRightPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
-                    //     }
-                    //     foreach (List<float> position in stepMultiFuture[stepFuturesPair.Key][i]["LeftTeamLocations"][playerId])
-                    //     {
-                    //         // print("Player1 Positions: (" + position[0] + ", " + position[1] + ")");
-                    //         mLeftPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
-                    //     }
-                    // }
-                    mplayersPositions.Add(mRightPlayer);
-                    mplayersPositions.Add(mLeftPlayer);
+                    HeatmapGenerator.GenerateHeatmap(playersPositions, Radius, Resolution, Sigma);
+                    HeatmapGenerator.GenerateHeatmap(mplayersPositions, Radius, Resolution, Sigma, "Miniature");
+                    HeatmapGenerator.updateHeatmap(Saturation, Value, Transparent, heatmapGradient, showHeatmap);
                 }
-                HeatmapGenerator.GenerateHeatmap(playersPositions, Radius, Resolution, Sigma);
-                HeatmapGenerator.GenerateHeatmap(mplayersPositions, Radius, Resolution, Sigma, "Miniature");
-                HeatmapGenerator.updateHeatmap(Saturation, Value, Transparent, heatmapGradient, showHeatmap);
+                else
+                {
+                    List<List<Vector2>> playersPositions = new List<List<Vector2>>();
+                    List<List<Vector2>> mplayersPositions = new List<List<Vector2>>();
+                    for (int playerId = 0; playerId < EachPlayerNumber; playerId++)
+                    {
+                        List<Vector2> rightPlayer = new List<Vector2>();
+                        List<Vector2> leftPlayer = new List<Vector2>();
+                        List<Vector2> mRightPlayer = new List<Vector2>();
+                        List<Vector2> mLeftPlayer = new List<Vector2>();
+                        for (int i = 0; i < futureAmount; i++)
+                        {
+                            for (int j = 0; j < futureFar; j++)
+                            {
+                                List<float> position = stepMultiFuture[stepFuturesPair.Key][i]["RightTeamLocations"][playerId][j];
+                                rightPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
+                                mRightPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
+                            }
+                            for (int j = 0; j < futureFar; j++)
+                            {
+                                List<float> position = stepMultiFuture[stepFuturesPair.Key][i]["LeftTeamLocations"][playerId][j];
+                                leftPlayer.Add(new Vector2(scale_x(-position[0]), scale_z(-position[1])));
+                                mLeftPlayer.Add(new Vector2(scale_x(-position[0]) / scaleSize, scale_z(-position[1]) / scaleSize));
+                            }
+                        }
+                        playersPositions.Add(rightPlayer);
+                        playersPositions.Add(leftPlayer);
+
+                        mplayersPositions.Add(mRightPlayer);
+                        mplayersPositions.Add(mLeftPlayer);
+                    }
+                    HeatmapGenerator.GenerateHeatmap(playersPositions, Radius, Resolution, Sigma);
+                    HeatmapGenerator.GenerateHeatmap(mplayersPositions, Radius, Resolution, Sigma, "Miniature");
+                    HeatmapGenerator.updateHeatmap(Saturation, Value, Transparent, heatmapGradient, showHeatmap);
+                }
             }
         }
     }

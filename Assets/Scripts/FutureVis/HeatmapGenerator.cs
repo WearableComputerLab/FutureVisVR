@@ -18,6 +18,10 @@ public class HeatmapGenerator : MonoBehaviour
     // public static float[,] heatmap = new float[heatmapResolution, heatmapResolution];
     public static float[,] heatmap;
 
+    /*** SituationFutureInfo.cs Future Diversity***/
+    public static HashSet<Vector2Int> usedHeatmapCells = new HashSet<Vector2Int>();
+    public static HashSet<Vector2Int> usedPositionCells = new HashSet<Vector2Int>();
+
     public static void GenerateHeatmap(List<List<Vector2>> playersPositions, int _radius, int _heatmapResolution, int _sigma, string heatmapType = "RealLife")
     {
         radius = _radius;
@@ -52,17 +56,26 @@ public class HeatmapGenerator : MonoBehaviour
         {
             foreach (Vector2 position in positions)
             {
+                // Convert the position to heatmap indices
                 int i = Mathf.FloorToInt((position.x + playingAreaSize.x / 2f) / cellSizeX);
                 int j = Mathf.FloorToInt((position.y + playingAreaSize.y / 2f) / cellSizeY);
+                // if (!heatmapType.Contains("Miniature"))
+                //     usedPositionCells.Add(new Vector2Int(i, j));
+
+                // Check if the indices are within the valid range of the heatmap
                 if (i >= 0 && i < 210 && j >= 0 && j < 136)
                 {
+                    // Iterate over the kernel to add the influence to the heatmap
                     for (int ii = 0; ii < 2 * radius + 1; ii++)
                     {
                         for (int jj = 0; jj < 2 * radius + 1; jj++)
                         {
+                            // Check if the heatmap indices are within the valid range
                             if (i + ii - radius >= 0 && i + ii - radius < 210 && j + jj - radius >= 0 && j + jj - radius < 136)
                             {
                                 heatmap[i + ii - radius, j + jj - radius] += kernel[ii, jj];
+                                // if (!heatmapType.Contains("Miniature"))
+                                //     usedHeatmapCells.Add(new Vector2Int(i + ii - radius, j + jj - radius));
                             }
                         }
                     }

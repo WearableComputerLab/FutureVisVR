@@ -1,3 +1,4 @@
+using System.Data;
 using System;
 using System.Text;
 using System.IO;
@@ -32,7 +33,7 @@ public class UserStudyInterface : MonoBehaviour
     private GamePlayers temp_AttachedGamePlayer = GamePlayers.None;
 
     private Transform miniMapObject;
-    private OVRInput.Controller controllerType;
+    private OVRInput.Controller controllerType = OVRInput.Controller.RTouch;
     private GameObject RaycasterCursorVisual;
     private List<Vector3> CursorWorldPositions;
     private bool triggerHasBeenPressed;
@@ -40,6 +41,7 @@ public class UserStudyInterface : MonoBehaviour
     public enum Conditions
     {
         None,
+        Training,
         No_Time_Limit_2_Arrows, No_Time_Limit_5_Arrows, No_Time_Limit_Heatmap, Yes_Time_Limit_2_Arrows, Yes_Time_Limit_5_Arrows, Yes_Time_Limit_Heatmap
     }
 
@@ -53,7 +55,7 @@ public class UserStudyInterface : MonoBehaviour
     private List<List<int>> Yes_Time_Limit_2_Arrows_Trials = new List<List<int>>();
     private List<List<int>> Yes_Time_Limit_5_Arrows_Trials = new List<List<int>>();
     private List<List<int>> Yes_Time_Limit_Heatmap_Trials = new List<List<int>>();
-
+    public static List<List<int>> Training_2A_5A_Heatmap_Trials = new List<List<int>>();
 
     private int situationNumber;
     string temp_scenarioName;
@@ -70,6 +72,9 @@ public class UserStudyInterface : MonoBehaviour
     private bool TimeLimit;
     private float totalTime = 5f;
 
+    /*** Start Training***/
+    public static bool startTraining;
+
     /*** Start Experiment***/
     public static bool startCondition;
 
@@ -81,6 +86,9 @@ public class UserStudyInterface : MonoBehaviour
     private bool showPlayers;
     private int PressButtonATimes = 0;
 
+    public static string observer;
+    public static string highlightedPlayer;
+
     private void Start()
     {
         /*** Step Num of Situations in Original Game ***/  // [Observer, Highlighted, Step_number], blue(right) player:1-10, red(left) player:11-20
@@ -91,12 +99,20 @@ public class UserStudyInterface : MonoBehaviour
         Yes_Time_Limit_2_Arrows_Trials = Dataset.Yes_Time_Limit_2_Arrows_Trials;
         Yes_Time_Limit_5_Arrows_Trials = Dataset.Yes_Time_Limit_5_Arrows_Trials;
         Yes_Time_Limit_Heatmap_Trials = Dataset.Yes_Time_Limit_Heatmap_Trials;
+        Training_2A_5A_Heatmap_Trials = Dataset.Training_2A_5A_Heatmap_Trials;
 
         /*** Select Scenario from Unity Inspector ***/
         switch (condition)
         {
             case Conditions.None:
                 // TO-DO Hide Players
+                startTraining = false;
+                startCondition = false;
+                break;
+            case Conditions.Training:
+                currentSituations = Training_2A_5A_Heatmap_Trials;
+                conditionName = "Training";
+                startTraining = true;
                 startCondition = false;
                 break;
             case Conditions.No_Time_Limit_2_Arrows:
@@ -105,6 +121,7 @@ public class UserStudyInterface : MonoBehaviour
                 Dataset.shuffleDataset(No_Time_Limit_2_Arrows_Trials);
                 currentSituations = No_Time_Limit_2_Arrows_Trials;  // Trials = Situations
                 startCondition = true;
+                startTraining = false;
                 break;
             case Conditions.No_Time_Limit_5_Arrows:
                 // parseScenarioName("No_Time_Limit_5_Arrows");
@@ -112,6 +129,7 @@ public class UserStudyInterface : MonoBehaviour
                 Dataset.shuffleDataset(No_Time_Limit_5_Arrows_Trials);
                 currentSituations = No_Time_Limit_5_Arrows_Trials;
                 startCondition = true;
+                startTraining = false;
                 break;
             case Conditions.No_Time_Limit_Heatmap:
                 // parseScenarioName("No_Time_Limit_Heatmap");
@@ -119,6 +137,7 @@ public class UserStudyInterface : MonoBehaviour
                 Dataset.shuffleDataset(No_Time_Limit_Heatmap_Trials);
                 currentSituations = No_Time_Limit_Heatmap_Trials;
                 startCondition = true;
+                startTraining = false;
                 break;
             case Conditions.Yes_Time_Limit_2_Arrows:
                 // parseScenarioName("Yes_Time_Limit_2_Arrows");
@@ -126,6 +145,7 @@ public class UserStudyInterface : MonoBehaviour
                 Dataset.shuffleDataset(Yes_Time_Limit_2_Arrows_Trials);
                 currentSituations = Yes_Time_Limit_2_Arrows_Trials;
                 startCondition = true;
+                startTraining = false;
                 break;
             case Conditions.Yes_Time_Limit_5_Arrows:
                 // parseScenarioName("Yes_Time_Limit_5_Arrows");
@@ -133,6 +153,7 @@ public class UserStudyInterface : MonoBehaviour
                 Dataset.shuffleDataset(Yes_Time_Limit_5_Arrows_Trials);
                 currentSituations = Yes_Time_Limit_5_Arrows_Trials;
                 startCondition = true;
+                startTraining = false;
                 break;
             case Conditions.Yes_Time_Limit_Heatmap:
                 // parseScenarioName("Yes_Time_Limit_Heatmap");
@@ -140,6 +161,7 @@ public class UserStudyInterface : MonoBehaviour
                 Dataset.shuffleDataset(Yes_Time_Limit_Heatmap_Trials);
                 currentSituations = Yes_Time_Limit_Heatmap_Trials;
                 startCondition = true;
+                startTraining = false;
                 break;
         }
 
@@ -171,7 +193,6 @@ public class UserStudyInterface : MonoBehaviour
 
             /*** Ray & miniMap***/
             miniMapObject = GameObject.Find("MovableMiniature").transform;
-            controllerType = OVRInput.Controller.RTouch;
             RaycasterCursorVisual = GameObject.Find("RaycasterCursorVisual");
             CursorWorldPositions = new List<Vector3>();
 
@@ -186,6 +207,19 @@ public class UserStudyInterface : MonoBehaviour
             showPlayers = false;
             ShowHidePlayers(showPlayers);
 
+            showHeatmap = false;
+            ShowArrow = false;
+        }
+
+        if (startTraining)
+        {
+            /*** Setup experiment parameters before running ***/
+            triggerHasBeenPressed = false;
+            situationNumber = 0;
+            current_observer = setSituation(currentSituations[situationNumber]);
+            /*** Hide players at the beginning ***/
+            showPlayers = false;
+            ShowHidePlayers(showPlayers);
             showHeatmap = false;
             ShowArrow = false;
         }
@@ -353,18 +387,102 @@ public class UserStudyInterface : MonoBehaviour
             }
         }
 
-        if (startCondition)
+        if (startTraining)
         {
-            if (OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.Two))
+            if (OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.Two) && showPlayers)
             {
                 ShowMiniature = false;
             }
-            else if (OVRInput.IsControllerConnected(controllerType) && OVRInput.GetUp(OVRInput.Button.Two))
+            else if (OVRInput.IsControllerConnected(controllerType) && OVRInput.GetUp(OVRInput.Button.Two) && showPlayers)
             {
                 ShowMiniature = true;
             }
 
-            if (((OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.One)) || Input.GetMouseButtonDown(0)) && PressButtonATimes == 0)
+            if (((OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.One)) || Input.GetMouseButtonDown(0)) && !showPlayers && PressButtonATimes == 0)
+            {
+                ControllerVibrate();
+                PressButtonATimes++;
+                showPlayers = true;
+                ShowHidePlayers(showPlayers);
+                ShowMiniature = true;
+            }
+            else if ((((OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.One)) || Input.GetMouseButtonDown(0)) && showPlayers && PressButtonATimes == 1))  // TO-DO check if A has been pressed, if yes, show future, hide "Press A to show future" hint.
+            {
+                ControllerVibrate();
+                VisButtonAHasBeenPressed = true;
+                startTimer = true;
+
+                if (situationNumber == 0 || situationNumber == 1)
+                {
+                    MovableFootball.conditionFutureAmount = 2;
+                    ShowArrow = true;
+                    showHeatmap = false;
+                }
+                else if (situationNumber == 2 || situationNumber == 3)
+                {
+                    MovableFootball.conditionFutureAmount = 5;
+                    ShowArrow = true;
+                    showHeatmap = false;
+                }
+                else if (situationNumber == 4 || situationNumber == 5)
+                {
+                    ShowArrow = false;
+                    showHeatmap = true;
+                }
+            }
+
+            if ((showHeatmap || ShowArrow) && ((OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) || Input.GetMouseButtonDown(1)))
+            {
+                ControllerVibrate();
+                triggerHasBeenPressed = true;
+            }
+            else
+            {
+                if (triggerHasBeenPressed && (showHeatmap || ShowArrow))
+                {
+                    situationNumber++;
+
+                    // Reset parameters
+                    triggerHasBeenPressed = false;
+                    VisButtonAHasBeenPressed = false;
+                    showHeatmap = false;
+                    ShowArrow = false;
+                    try
+                    {
+                        current_observer = setSituation(currentSituations[situationNumber]);
+                    }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        StopPlayMode();
+                    }
+                    showPlayers = false;
+                    ShowHidePlayers(showPlayers);
+                    ShowMiniature = false;
+                    PressButtonATimes = 0;
+                }
+            }
+            GameObject.Find("OVRCameraRig").transform.position = new Vector3(GameObject.Find(current_observer).transform.position.x, 0, GameObject.Find(current_observer).transform.position.z);
+            // GameObject.Find("OVRCameraRig").transform.rotation = GameObject.Find(current_observer).transform.rotation; /*** The roation of camera is equal to the observer rotation ***/
+
+            /*** Let camera face to the target***/
+            Vector3 lookDirection = GameObject.Find(highlightedPlayer).transform.position - GameObject.Find("OVRCameraRig").transform.position;
+            Quaternion rotationToLookAtTarget = Quaternion.LookRotation(lookDirection);
+            GameObject.Find("OVRCameraRig").transform.rotation = rotationToLookAtTarget;
+        }
+
+
+        if (startCondition)
+        {
+            if (OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.Two) && showPlayers)
+            {
+                ShowMiniature = false;
+            }
+            else if (OVRInput.IsControllerConnected(controllerType) && OVRInput.GetUp(OVRInput.Button.Two) && showPlayers)
+            {
+                ShowMiniature = true;
+            }
+
+            if (((OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.One)) || Input.GetMouseButtonDown(0)) && !showPlayers && PressButtonATimes == 0)
             {
                 ControllerVibrate();
 
@@ -421,17 +539,22 @@ public class UserStudyInterface : MonoBehaviour
                     // print("EyeInteraction.EyeTrackingMiniatureTimes: " + EyeInteraction.EyeTrackingMiniatureTimes);
                     print("EyeInteraction.EyeTrackingMiniatureTimer: " + EyeInteraction.EyeTrackingMiniatureTimer);
 
-                    saveGeneralDataAsCSV(ParticiantID, conditionName, currentSituations[situationNumber], timer, CursorWorldPositions,
-                                EyeInteraction.EyeTrackingPitchPositions, EyeInteraction.EyeTrackingMiniatureTimer);
-
-                    situationNumber++;
-
                     // Reset parameters
                     if (TimeLimit)
+                    {
+                        saveGeneralDataAsCSV(ParticiantID, conditionName, currentSituations[situationNumber], 5 - timer, CursorWorldPositions,
+                                                EyeInteraction.EyeTrackingPitchPositions, EyeInteraction.EyeTrackingMiniatureTimer);
                         timer = totalTime;
+                    }
                     else
+                    {
+                        saveGeneralDataAsCSV(ParticiantID, conditionName, currentSituations[situationNumber], timer, CursorWorldPositions,
+                                                EyeInteraction.EyeTrackingPitchPositions, EyeInteraction.EyeTrackingMiniatureTimer);
                         timer = 0;
+                    }
                     Timer.currentTime = timer;
+
+                    situationNumber++;
 
                     eyeTimer = 0;
                     startEyeTracking = false;
@@ -460,12 +583,12 @@ public class UserStudyInterface : MonoBehaviour
             {
                 if (TimeLimit)
                 {
-                    print("Timer: " + timer);
+                    // print("Timer: " + timer);
                     timer -= Time.deltaTime;
 
                     if (timer <= 0.001f)
                     {
-                        saveGeneralDataAsCSV(ParticiantID, conditionName, currentSituations[situationNumber], timer, CursorWorldPositions,
+                        saveGeneralDataAsCSV(ParticiantID, conditionName, currentSituations[situationNumber], -1, CursorWorldPositions,
                                     EyeInteraction.EyeTrackingPitchPositions, EyeInteraction.EyeTrackingMiniatureTimer);
 
                         situationNumber++;
@@ -502,7 +625,12 @@ public class UserStudyInterface : MonoBehaviour
 
 
             GameObject.Find("OVRCameraRig").transform.position = new Vector3(GameObject.Find(current_observer).transform.position.x, 0, GameObject.Find(current_observer).transform.position.z);
-            GameObject.Find("OVRCameraRig").transform.rotation = GameObject.Find(current_observer).transform.rotation;
+            // GameObject.Find("OVRCameraRig").transform.rotation = GameObject.Find(current_observer).transform.rotation; /*** The roation of camera is equal to the observer rotation ***/
+
+            /*** Let camera face to the target***/
+            Vector3 lookDirection = GameObject.Find(highlightedPlayer).transform.position - GameObject.Find("OVRCameraRig").transform.position;
+            Quaternion rotationToLookAtTarget = Quaternion.LookRotation(lookDirection);
+            GameObject.Find("OVRCameraRig").transform.rotation = rotationToLookAtTarget;
         }
     }
 
@@ -512,18 +640,20 @@ public class UserStudyInterface : MonoBehaviour
         // Get the current date
         DateTime currentDate = DateTime.Now;
 
-        string observer;
-        string highlightedPlayer;
-        if (situation[0] > 10)
-            observer = "LeftPlayer" + (situation[0] - 10).ToString();
-        else
-            observer = "RightPlayer" + situation[0].ToString();
-        if (situation[1] > 10)
-            highlightedPlayer = "LeftPlayer" + (situation[1] - 10).ToString();
-        else
-            highlightedPlayer = "RightPlayer" + situation[1].ToString();
+        // string observer;
+        // string highlightedPlayer;
+        // if (situation[0] > 10)
+        //     observer = "LeftPlayer" + (situation[0] - 10).ToString();
+        // else
+        //     observer = "RightPlayer" + situation[0].ToString();
+        // if (situation[1] > 10)
+        //     highlightedPlayer = "LeftPlayer" + (situation[1] - 10).ToString();
+        // else
+        //     highlightedPlayer = "RightPlayer" + situation[1].ToString();
         GameObject observerObject = GameObject.Find(observer);
         GameObject highlightedPlayerObject = GameObject.Find(highlightedPlayer);
+
+        int crowdednessCount = Crowdedness(highlightedPlayerObject.transform.position, observerObject.transform.position);
 
         float ObserverTargetDistance = Vector3.Distance(observerObject.transform.position, highlightedPlayerObject.transform.position);
         float SelectedpositionTargetDistance = -1; // -1 indicates no distance
@@ -538,32 +668,37 @@ public class UserStudyInterface : MonoBehaviour
         {
             if (!fileExists)
             {
-                data.WriteLine($"{"Date"}, {"ParticipantID"}, {"Condition"}, {"Situation"}, {"CompletionTime"}, {"ObserverTargetDistance"}, {"SelectedpositionTargetDistance"}, {"EyeTrackingMiniatureTimer"}, {"SelectedPositions"}, {"ObserverObjectPosition"}, {"HighlightedPlayerObjectPosition"}");
+                data.WriteLine($"{"Date"}, {"ParticipantID"}, {"Condition"}, {"Situation"}, {"Crowdedness"}, {"ObserverTargetDistance"}, {"CompletionTime"}, {"SelectedpositionTargetDistance"}, {"EyeTrackingMiniatureTimer"}, {"SelectedPositions"}, {"ObserverObjectPosition"}, {"HighlightedPlayerObjectPosition"}");
             }
             // data.WriteLine($"{currentDate}, {ParticiantID},{Condition}, {situation[3]},{CompletionTime}, {ObserverTargetDistance}, {SelectedpositionTargetDistance}, {EyeTrackingMiniatureTimer}, {ConvertListVector3ToCSVString(SelectedPositions)}, {ConvertListVector3ToCSVString(EyeTrackingPitchPositions)},  {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}");
-            data.WriteLine($"{currentDate}, {ParticipantID},{Condition}, {situation[3]},{CompletionTime}, {ObserverTargetDistance}, {SelectedpositionTargetDistance}, {EyeTrackingMiniatureTimer}, {ConvertListVector3ToCSVString(SelectedPositions)},  {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}");
+            data.WriteLine($"{currentDate}, {ParticipantID},{Condition}, {situation[3]}, {crowdednessCount}, {ObserverTargetDistance},{CompletionTime}, {SelectedpositionTargetDistance}, {EyeTrackingMiniatureTimer}, {ConvertListVector3ToCSVString(SelectedPositions)},  {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}");
         }
+
+        /*** Save View ***/
+        // SituationFutureInfo.SaveCameraView(conditionName + "_" + currentSituations[situationNumber][3].ToString());
+        /*** Calculate Future Diversity Standard Deviation***/
+        SituationFutureInfo.CalculateFutureVariance(highlightedPlayer, conditionName, currentSituations[situationNumber][3].ToString());
     }
     private void saveEyeDataAsCSV(int ParticipantID, string Condition, float time, RaycastHit hit, List<int> situation)
     {
         // Get the current date
         DateTime currentDate = DateTime.Now;
 
-        string observer;
-        string highlightedPlayer;
-        if (situation[0] > 10)
-            observer = "LeftPlayer" + (situation[0] - 10).ToString();
-        else
-            observer = "RightPlayer" + situation[0].ToString();
-        if (situation[1] > 10)
-            highlightedPlayer = "LeftPlayer" + (situation[1] - 10).ToString();
-        else
-            highlightedPlayer = "RightPlayer" + situation[1].ToString();
+        // string observer;
+        // string highlightedPlayer;
+        // if (situation[0] > 10)
+        //     observer = "LeftPlayer" + (situation[0] - 10).ToString();
+        // else
+        //     observer = "RightPlayer" + situation[0].ToString();
+        // if (situation[1] > 10)
+        //     highlightedPlayer = "LeftPlayer" + (situation[1] - 10).ToString();
+        // else
+        //     highlightedPlayer = "RightPlayer" + situation[1].ToString();
 
         GameObject observerObject = GameObject.Find(observer);
         GameObject highlightedPlayerObject = GameObject.Find(highlightedPlayer);
 
-        GameObject head = GameObject.Find("OVRCameraRig");
+        GameObject head = GameObject.Find("CenterEyeAnchor");
 
         float ObserverTargetDistance = Vector3.Distance(observerObject.transform.position, highlightedPlayerObject.transform.position);
         float EyeTargetDistance = Vector3.Distance(hit.point, highlightedPlayerObject.transform.position);
@@ -607,22 +742,11 @@ public class UserStudyInterface : MonoBehaviour
         sb.Append("]");
         return sb.ToString();
     }
-    // string ConvertListToCSVString(List<Vector3> list)
-    // {
-    //     StringBuilder sb = new StringBuilder();
-    //     sb.Append("[");
-    //     foreach (Vector3 vector in list)
-    //     {
-    //         sb.Append($"{vector.x}, {vector.y}, {vector.z}");
-    //     }
-    //     sb.Append("]");
-    //     return sb.ToString();
-    // }
 
     private string setSituation(List<int> situation) // [Observer, Highlighted, Step_number], blue(right) player:1-10, red(left) player:11-20
     {
-        string observer;
-        string highlightedPlayer;
+        // string observer;
+        // string highlightedPlayer;
         int stepNumber;
 
         stepNumber = situation[2];
@@ -647,13 +771,17 @@ public class UserStudyInterface : MonoBehaviour
     {
         if (show)
         {
-            for (int i = 0; i < 11; i++)
-            {
+            // for (int i = 0; i < 11; i++)
+            // {
 
-                GameObject.Find("RightPlayer" + i).transform.localScale = new Vector3(0.65f, 2.2f, 0.65f);
-                GameObject.Find("LeftPlayer" + i).transform.localScale = new Vector3(0.65f, 2.2f, 0.65f);
-            }
-            GameObject.Find(current_observer).transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+            //     GameObject.Find("RightPlayer" + i).transform.localScale = new Vector3(0.65f, 2.2f, 0.65f);
+            //     GameObject.Find("LeftPlayer" + i).transform.localScale = new Vector3(0.65f, 2.2f, 0.65f);
+            // }
+            // GameObject.Find(current_observer).transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+
+            GameObject.Find(highlightedPlayer).transform.localScale = new Vector3(0.65f, 2.2f, 0.65f);
+            // GameObject.Find("m" + highlightedPlayer).transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
+            GameObject.Find("m" + observer).transform.localScale = new Vector3(0.01f, 0.01f, 0.01f);
         }
         else if (!show)
         {
@@ -661,6 +789,8 @@ public class UserStudyInterface : MonoBehaviour
             {
                 GameObject.Find("RightPlayer" + i).transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
                 GameObject.Find("LeftPlayer" + i).transform.localScale = new Vector3(0.001f, 0.001f, 0.001f);
+                GameObject.Find("mRightPlayer" + i).transform.localScale = new Vector3(0.0001f, 0.0001f, 0.0001f);
+                GameObject.Find("mLeftPlayer" + i).transform.localScale = new Vector3(0.0001f, 0.0001f, 0.0001f);
             }
         }
     }
@@ -688,6 +818,55 @@ public class UserStudyInterface : MonoBehaviour
     {
         // Stop the haptic feedback (vibration)
         OVRInput.SetControllerVibration(0, 0, OVRInput.Controller.Active);
+    }
+
+    private int Crowdedness(Vector3 highlightedPlayer, Vector3 observer)
+    {
+        /***
+        highlightedPlayer is the known focus, observer is the point on the ellipse
+        ***/
+        Vector3 focus1 = highlightedPlayer;
+        Vector3 point = observer;
+
+        /*** Get a and b***/
+        float distancePointToKnownFocus = Vector3.Distance(point, focus1);
+        float a = (float)((1 / Math.Sqrt(3)) * distancePointToKnownFocus);  // a = (1/sqrt(3)) * Distance, Distance: from observer to highlighted player
+        // float a = (float)((3 * distancePointToKnownFocus) / (6 - Math.Sqrt(3)));  // a = 3D/(6-sqrt(3)), D: distance from observer to highlighted player
+        // print("a: " + a);
+        float b = (float)Math.Sqrt((float)((2 * Math.Sqrt(3)) / 3) * Math.Pow(distancePointToKnownFocus, 2) - Math.Pow(distancePointToKnownFocus, 2));  // b = (2*sqrt(3)/3) * D^2 - D^2
+        // float b = (float)Math.Sqrt((3 * Math.Sqrt(3) * Math.Pow(distancePointToKnownFocus, 2)) / (18 - 3 * Math.Sqrt(3)));
+
+        /*** Get another focus***/
+        // float distanceToUnknownFocus = 2 * a - distancePointToKnownFocus;
+        // // get the direction from the known focus to the point
+        Vector3 direction = (point - focus1).normalized;
+        // // calculate the position of the unknown focus
+        // Vector3 focus2 = focus1 + direction * distanceToUnknownFocus;
+
+        // print("b: " + b);
+        float c = Mathf.Sqrt(a * a - b * b);
+        // print("C: " + c);
+        Vector3 center = (focus1 + point) / 2;
+        // print("Center: " + center);
+        Vector3 focus2 = center + direction * c;
+        // print("focus2: " + focus2);
+
+        /*** Count number of game objects within the ellipse area***/
+        GameObject[] objects = GameObject.FindGameObjectsWithTag("Player");
+        int count = 0;
+        foreach (GameObject obj in objects)
+        {
+            Vector3 pos = obj.transform.position;
+            float distanceSum = Vector3.Distance(pos, focus1) + Vector3.Distance(pos, focus2);
+            // float distanceProduct = Vector3.Distance(pos, focus1) * Vector3.Distance(pos, focus2);
+            if (distanceSum <= 2 * a)
+            {
+                // print("Crowdedness: " + obj.name);
+                count++;
+            }
+        }
+
+        return count - 2;  //remove observer and highlighted player
     }
 
     private void StopPlayMode()
