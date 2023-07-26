@@ -102,6 +102,7 @@ public class MovableFootball : MonoBehaviour
     public static bool showHeatmap = false;
     [Header("Heatmap Variables")]
     public Gradient heatmapGradient;
+    public static Gradient GradientForDistinguishingHeatmap;
     [Range(-1, 1)]
     public float Saturation = 0;
     [Range(-1, 1)]
@@ -238,8 +239,10 @@ public class MovableFootball : MonoBehaviour
         Dataset.fixedGameDuration = fixedGameDuration;
 
         MultiFuture.startFutureInfo(stepMultiFuture, FarFuture);
-        // MiniatureView.startMiniatureView();
+        MiniatureView.startMiniatureView();
         MiniatureView.startMovableMiniature();
+
+        GradientForDistinguishingHeatmap = heatmapGradient;
     }
 
     // Update is called once per frame

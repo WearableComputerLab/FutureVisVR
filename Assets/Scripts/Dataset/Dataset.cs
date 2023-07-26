@@ -87,7 +87,7 @@ public class Dataset : ScriptableObject
         No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 5, 6, 480, 9 }); //original: { 4, 11, 80, 9 }
         No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 6, 460, 10 }); //original: { 18, 11, 80, 10 }
         No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 1, 19, 530, 11 }); //original: { 18, 15, 90, 11 }
-        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 20, 17, 800, 12 }); //original: { 2, 5, 110, 12 }
+        No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 20, 17, 800, 12 }); //original: { 2, 5, 110, 12 } //**
         No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 7, 10, 970, 13 }); //original: { 9, 3, 160, 13 }
         No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 4, 19, 980, 14 }); //original: { 12, 19, 160, 14 }
         No_Time_Limit_2_Arrows_Trials.Add(new List<int> { 17, 6, 1200, 15 }); //original: { 17, 8, 210, 15 }
@@ -128,7 +128,7 @@ public class Dataset : ScriptableObject
         No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 11, 5, 120, 12 });
         No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 6, 10, 2040, 13 }); //original: { 6, 3, 160, 13 }
         No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 6, 5, 2400, 14 }); //original: { 6, 19, 160, 14 }
-        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 20, 8, 160, 15 });
+        No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 20, 8, 150, 15 }); //original: { 20, 8, 160, 15 } LATEST
         // (Close, Dense)
         No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 17, 6, 10, 16 });
         No_Time_Limit_5_Arrows_Trials.Add(new List<int> { 11, 16, 620, 17 }); //original: { 17, 1, 20, 17 }
@@ -150,38 +150,38 @@ public class Dataset : ScriptableObject
 
 
         // (Far, Dense)
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 11, 0, 0 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 18, 0, 1 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 1, 0, 2 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 18, 0, 3 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 5, 20, 4 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 12, 2, 210, 0 }); //original: { 6, 11, 0, 0 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 19, 510, 1 }); //original: { 17, 18, 0, 1 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 5, 1, 800, 2 }); //original: { 14, 1, 0, 2 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 9, 17, 800, 3 }); //original: { 14, 18, 0, 3 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 5, 13, 840, 4 }); //original: { 11, 5, 20, 4 }
         No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 3, 20, 5 });
         No_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 4, 30, 6 });
         No_Time_Limit_Heatmap_Trials.Add(new List<int> { 12, 5, 40, 7 });
         // (Far, Scattered)
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 8, 0, 8 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 12, 11, 840, 8 }); //original: { 7, 8, 0, 8 }
         No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 4, 0, 9 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 3, 0, 10 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 5, 0, 11 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 16, 12, 0, 12 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 13, 0, 13 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 4, 840, 10 }); //original: { 1, 3, 0, 10 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 4, 3, 840, 11 }); //original: { 6, 5, 0, 11 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 8, 850, 12 }); //original: { 16, 12, 0, 12 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 11, 860, 13 }); //original: { 17, 13, 0, 13 }
         No_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 13, 0, 14 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 5, 1, 0, 15 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 5, 20, 890, 15 }); //original: { 5, 1, 0, 15 }
         // (Close, Dense)
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 7, 30, 16 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 18, 13, 30, 16 }); //original: { 17, 7, 30, 16 }
         No_Time_Limit_Heatmap_Trials.Add(new List<int> { 12, 6, 50, 17 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 6, 90, 18 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 15, 6, 100, 19 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 6, 100, 20 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 6, 100, 21 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 9, 220, 22 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 6, 110, 18 }); //original: { 2, 6, 90, 18 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 7, 120, 19 }); //original: { 15, 6, 100, 19 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 15, 9, 230, 20 }); //original: { 2, 6, 100, 20 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 19, 16, 270, 21 }); //original: { 1, 6, 100, 21 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 12, 1, 270, 22 }); //original: { 6, 9, 220, 22 }
         No_Time_Limit_Heatmap_Trials.Add(new List<int> { 16, 15, 1410, 23 });
         // (Close, Scattered)
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 16, 11, 0, 24 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 17, 11, 0, 25 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 20, 1, 890, 24 }); //original: { 16, 11, 0, 24 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 12, 9, 900, 25 }); //original: { 17, 11, 0, 25 }
         No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 16, 0, 26 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 1, 0, 27 });
-        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 1, 10, 28 });
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 18, 1030, 27 }); //original: { 7, 1, 0, 27 }
+        No_Time_Limit_Heatmap_Trials.Add(new List<int> { 18, 4, 1030, 28 }); //original: { 7, 1, 10, 28 }
         No_Time_Limit_Heatmap_Trials.Add(new List<int> { 3, 5, 20, 29 });
         No_Time_Limit_Heatmap_Trials.Add(new List<int> { 10, 8, 70, 30 });
         No_Time_Limit_Heatmap_Trials.Add(new List<int> { 14, 5, 90, 31 });
@@ -265,29 +265,29 @@ public class Dataset : ScriptableObject
 
         // (Far, Dense)
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 5, 8, 90, 0 });
-        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 7, 120, 1 });
-        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 8, 7, 120, 2 });
-        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 15, 19, 160, 3 });
-        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 19, 160, 4 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 9, 15, 1040, 1 }); //original: { 1, 7, 120, 1 }
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 17, 1040, 2 }); //original: { 8, 7, 120, 2 }
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 12, 10, 1210, 3 }); //original: { 15, 19, 160, 3 }
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 20, 17, 1520, 4 }); //original: { 2, 19, 160, 4 }
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 19, 160, 5 });
-        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 9, 14, 160, 6 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 10, 12, 1570, 6 }); //original: { 9, 14, 160, 6 }
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 14, 160, 7 });
         // (Far, Scattered)
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 8, 0, 8 });
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 5, 0, 9 });
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 3, 0, 10 });
-        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 16, 18, 0, 11 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 19, 1, 1610, 11 }); //original: { 16, 18, 0, 11 }
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 15, 0, 12 });
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 18, 0, 13 });
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 12, 0, 14 });
-        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 8, 1, 0, 15 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 3, 4, 1610, 15 }); //original: { 8, 1, 0, 15 }
         // (Close, Dense)
-        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 7, 30, 16 });
-        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 11, 6, 90, 17 });
-        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 13, 6, 90, 18 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 8, 5, 1470, 16 }); //original: { 2, 7, 30, 16 }  { 13, 11, 290, 16 }
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 2, 20, 330, 17 }); //original: { 11, 6, 90, 17 }
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 6, 15, 360, 18 }); //original: { 13, 6, 90, 18 }
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 1, 6, 90, 19 });
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 9, 6, 100, 20 });
-        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 13, 6, 110, 21 });
+        Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 9, 15, 370, 21 }); //original: { 13, 6, 110, 21 }
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 15, 9, 220, 22 });
         Yes_Time_Limit_Heatmap_Trials.Add(new List<int> { 7, 16, 630, 23 });
         // (Close, Scattered)

@@ -19,7 +19,6 @@ public class SituationFutureInfo : MonoBehaviour
             {
                 countVisedFutureNumber++;
             }
-            print("HAHACT1: " + count);
             count++;
 
             targetLineRenderersPositions.Add(new List<Vector2>());
@@ -31,7 +30,6 @@ public class SituationFutureInfo : MonoBehaviour
             }
 
         }
-        print("HAHACT2: " + countVisedFutureNumber);
 
         List<float> distance = new List<float>();
         for (int i = 0; i < countVisedFutureNumber; i++)
@@ -58,7 +56,7 @@ public class SituationFutureInfo : MonoBehaviour
         }
         float standardDeviation = Mathf.Sqrt(sumOfSquaredDifferences / distance.Count);
 
-        string filePath = "C:/Users/chenk/Desktop/First_Project/User_Study/FutureDiversity/DatasetFutureDiversity.csv";
+        string filePath = "C:/Users/chenk/Desktop/First_Project/User_Study/FutureDiversity/DatasetFutureDiversity3.csv";
         bool fileExists = File.Exists(filePath);
 
         using (StreamWriter data = new StreamWriter(filePath, true))
@@ -142,7 +140,7 @@ public class SituationFutureInfo : MonoBehaviour
     {
         // Check if the capture camera is assigned
         Camera captureCamera = GameObject.Find("GlobalCamera").GetComponent<Camera>();
-        string folderPath = "C:/Users/chenk/Desktop/First_Project/User_Study/Situation_Info/MiniatureView";
+        string folderPathMiniature = "C:/Users/chenk/Desktop/First_Project/User_Study/Situation_InfoInfo/MiniatureView";
         if (captureCamera != null)
         {
             // Create a new RenderTexture with the same dimensions as the camera's viewport
@@ -165,7 +163,7 @@ public class SituationFutureInfo : MonoBehaviour
             // Encode the texture as PNG data
             byte[] pngData = texture.EncodeToPNG();
 
-            string savePath = folderPath + "/" + situation + ".png";
+            string savePath = folderPathMiniature + "/" + situation + ".png";
             // Save the PNG data to the specified file path
             File.WriteAllBytes(savePath, pngData);
 
@@ -173,6 +171,47 @@ public class SituationFutureInfo : MonoBehaviour
             Destroy(texture);
             RenderTexture.active = null;
             captureCamera.targetTexture = null;
+            Destroy(renderTexture);
+
+            Debug.Log("Camera view saved to: " + savePath);
+        }
+        else
+        {
+            Debug.LogError("Capture camera not assigned!");
+        }
+
+        Camera mainCamera = GameObject.Find("CenterEyeAnchor").GetComponent<Camera>();
+        string folderPath = "C:/Users/chenk/Desktop/First_Project/User_Study/Situation_InfoInfo";
+        if (mainCamera != null)
+        {
+            // Create a new RenderTexture with the same dimensions as the camera's viewport
+            RenderTexture renderTexture = new RenderTexture(4096, 2160, 24);
+
+            // Set the camera's target texture to the newly created RenderTexture
+            mainCamera.targetTexture = renderTexture;
+
+            // Render the camera view to the target texture
+            mainCamera.Render();
+
+            // Activate the target texture
+            RenderTexture.active = renderTexture;
+
+            // Create a new Texture2D and read the pixels from the RenderTexture
+            Texture2D texture = new Texture2D(4096, 2160, TextureFormat.RGB24, false);
+            texture.ReadPixels(new Rect(0, 0, 4096, 2160), 0, 0);
+            texture.Apply();
+
+            // Encode the texture as PNG data
+            byte[] pngData = texture.EncodeToPNG();
+
+            string savePath = folderPath + "/" + situation + ".png";
+            // Save the PNG data to the specified file path
+            File.WriteAllBytes(savePath, pngData);
+
+            // Clean up resources
+            Destroy(texture);
+            RenderTexture.active = null;
+            mainCamera.targetTexture = null;
             Destroy(renderTexture);
 
             Debug.Log("Camera view saved to: " + savePath);

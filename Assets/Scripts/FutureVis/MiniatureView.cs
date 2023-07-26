@@ -13,19 +13,19 @@ public class MiniatureView : MonoBehaviour
     private static GameObject mainCameraObject;
     private static bool temp_showMovableMiniature;
 
-    // public static void startMiniatureView()
-    // {
-    //     objectToProjectTo = GameObject.Find("GlobalCameraProjectTo");
-    //     cameraToProject = GameObject.Find("GlobalCamera").GetComponent<Camera>();
+    public static void startMiniatureView()
+    {
+        // objectToProjectTo = GameObject.Find("GlobalCameraProjectTo");
+        // cameraToProject = GameObject.Find("GlobalCamera").GetComponent<Camera>();
 
-    //     Material material = objectToProjectTo.GetComponent<Renderer>().material;
-    //     material.shader = Shader.Find("Unlit/Texture");
+        // Material material = objectToProjectTo.GetComponent<Renderer>().material;
+        // material.shader = Shader.Find("Unlit/Texture");
 
-    //     renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
+        // renderTexture = new RenderTexture(Screen.width, Screen.height, 24);
 
-    //     cameraToProject.targetTexture = renderTexture;
-    //     objectToProjectTo.GetComponent<Renderer>().material.mainTexture = renderTexture;
-    // }
+        // cameraToProject.targetTexture = renderTexture;
+        // objectToProjectTo.GetComponent<Renderer>().material.mainTexture = renderTexture;
+    }
 
     public static void startMovableMiniature()
     {
@@ -52,6 +52,11 @@ public class MiniatureView : MonoBehaviour
         if (show)
         {
             fixedMovableMiniature(movableMiniature, GameObject.Find("CenterEyeAnchor"), 0.5f, 0.5f, 0.5f);
+            // if (GameObject.Find("Halo") != null)
+            // {
+            //     GameObject.Find("GlobalCamera").transform.position = new Vector3(GameObject.Find("Halo").transform.position.x, 20, GameObject.Find("Halo").transform.position.z);
+            // }
+            // fixedMovableMiniature(GameObject.Find("GlobalCameraProjectTo"), GameObject.Find("CenterEyeAnchor"), 0.5f, 0.5f, 0.5f);
             // movableMiniature.transform.position = new Vector3(0, 0, 0);
             // movableMiniature.transform.position = new Vector3(mainCameraPosition.x + 0.6f, 0, mainCameraPosition.z + 0.3f);
         }
@@ -66,7 +71,7 @@ public class MiniatureView : MonoBehaviour
         Camera mainCamera = Camera.main;
         Vector3 viewportPosition = new Vector3(x, y, mainCamera.nearClipPlane + z);
         Vector3 worldPosition = mainCamera.ViewportToWorldPoint(viewportPosition);
-        gameObject.transform.position = new Vector3(worldPosition.x, cameraObject.transform.position.y - 0.2f, worldPosition.z);
+        gameObject.transform.position = new Vector3(worldPosition.x, cameraObject.transform.position.y - 0.3f, worldPosition.z);
         Vector3 directionToCamera = mainCamera.transform.position - gameObject.transform.position;
         // gameObject.transform.rotation = Quaternion.LookRotation(directionToCamera);
         gameObject.transform.rotation = Quaternion.Euler(0, Quaternion.LookRotation(directionToCamera).y, Quaternion.LookRotation(directionToCamera).z);

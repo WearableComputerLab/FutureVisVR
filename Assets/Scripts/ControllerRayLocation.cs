@@ -16,6 +16,11 @@ public class ControllerRayLocation : MonoBehaviour
     }
     private void Update()
     {
+        // if (GameObject.Find("RaycasterCursorVisual") != null)
+        //     GameObject.Find("WIMOculusCursor").transform.position = new Vector3(GameObject.Find("MovableMiniature").transform.InverseTransformPoint(GameObject.Find("OVRCameraRig").transform.TransformPoint(GameObject.Find("RaycasterCursorVisual").transform.position)).x,
+        //     -0.2f,
+        //     GameObject.Find("MovableMiniature").transform.InverseTransformPoint(GameObject.Find("OVRCameraRig").transform.TransformPoint(GameObject.Find("RaycasterCursorVisual").transform.position)).z);
+
         // Check if the specified Oculus controller is connected
         // if (OVRInput.IsControllerConnected(controllerType))
         {
@@ -61,7 +66,7 @@ public class ControllerRayLocation : MonoBehaviour
             Vector3 rayOrigin = GameObject.Find("OVRCameraRig").transform.TransformPoint(controllerPosition);
             Quaternion rayRotation = GameObject.Find("OVRCameraRig").transform.rotation * controllerRotation;
 
-            RaycastHit hit;
+            // RaycastHit hit;
             // if (Physics.Raycast(controllerPosition, controllerRotation * Vector3.forward, out hit))
             // if (Physics.Raycast(rayOrigin, rayRotation * Vector3.forward, out hit))
             if (OVRInput.IsControllerConnected(controllerType) && OVRInput.Get(OVRInput.Button.SecondaryIndexTrigger))

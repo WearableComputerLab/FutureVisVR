@@ -467,7 +467,7 @@ public class UserStudyInterface : MonoBehaviour
             /*** Let camera face to the target***/
             Vector3 lookDirection = GameObject.Find(highlightedPlayer).transform.position - GameObject.Find("OVRCameraRig").transform.position;
             Quaternion rotationToLookAtTarget = Quaternion.LookRotation(lookDirection);
-            GameObject.Find("OVRCameraRig").transform.rotation = rotationToLookAtTarget;
+            GameObject.Find("OVRCameraRig").transform.rotation = new Quaternion(0, rotationToLookAtTarget.y, 0, rotationToLookAtTarget.w);
         }
 
 
@@ -518,7 +518,7 @@ public class UserStudyInterface : MonoBehaviour
             if ((showHeatmap || ShowArrow) && VisButtonAHasBeenPressed)
             {
                 eyeTimer += Time.deltaTime;
-                saveEyeDataAsCSV(ParticiantID, conditionName, eyeTimer, EyeInteraction.hit, currentSituations[situationNumber]);
+                saveEyeDataAsCSV(ParticiantID, conditionName, eyeTimer, EyeInteraction.hit, EyeInteraction.hitObjectName, currentSituations[situationNumber]);
             }
 
             if ((showHeatmap || ShowArrow) && ((OVRInput.IsControllerConnected(controllerType) && OVRInput.GetDown(OVRInput.Button.SecondaryIndexTrigger)) || Input.GetMouseButtonDown(1)))
@@ -588,6 +588,8 @@ public class UserStudyInterface : MonoBehaviour
 
                     if (timer <= 0.001f)
                     {
+                        CursorWorldPositions.Add(GameObject.Find("FootballEngine").transform.TransformPoint(RaycasterCursorVisual.transform.position)); // Get and store cursor world positions
+
                         saveGeneralDataAsCSV(ParticiantID, conditionName, currentSituations[situationNumber], -1, CursorWorldPositions,
                                     EyeInteraction.EyeTrackingPitchPositions, EyeInteraction.EyeTrackingMiniatureTimer);
 
@@ -630,7 +632,8 @@ public class UserStudyInterface : MonoBehaviour
             /*** Let camera face to the target***/
             Vector3 lookDirection = GameObject.Find(highlightedPlayer).transform.position - GameObject.Find("OVRCameraRig").transform.position;
             Quaternion rotationToLookAtTarget = Quaternion.LookRotation(lookDirection);
-            GameObject.Find("OVRCameraRig").transform.rotation = rotationToLookAtTarget;
+            // GameObject.Find("OVRCameraRig").transform.rotation = rotationToLookAtTarget;
+            GameObject.Find("OVRCameraRig").transform.rotation = new Quaternion(0, rotationToLookAtTarget.y, 0, rotationToLookAtTarget.w);
         }
     }
 
@@ -674,12 +677,12 @@ public class UserStudyInterface : MonoBehaviour
             data.WriteLine($"{currentDate}, {ParticipantID},{Condition}, {situation[3]}, {crowdednessCount}, {ObserverTargetDistance},{CompletionTime}, {SelectedpositionTargetDistance}, {EyeTrackingMiniatureTimer}, {ConvertListVector3ToCSVString(SelectedPositions)},  {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}");
         }
 
-        /*** Save View ***/
+        // /*** Save View ***/
         // SituationFutureInfo.SaveCameraView(conditionName + "_" + currentSituations[situationNumber][3].ToString());
-        /*** Calculate Future Diversity Standard Deviation***/
-        SituationFutureInfo.CalculateFutureVariance(highlightedPlayer, conditionName, currentSituations[situationNumber][3].ToString());
+        // /*** Calculate Future Diversity Standard Deviation***/
+        // SituationFutureInfo.CalculateFutureVariance(highlightedPlayer, conditionName, currentSituations[situationNumber][3].ToString());
     }
-    private void saveEyeDataAsCSV(int ParticipantID, string Condition, float time, RaycastHit hit, List<int> situation)
+    private void saveEyeDataAsCSV(int ParticipantID, string Condition, float time, RaycastHit hit, string hitObjectName, List<int> situation)
     {
         // Get the current date
         DateTime currentDate = DateTime.Now;
@@ -715,7 +718,7 @@ public class UserStudyInterface : MonoBehaviour
                 {
                     data.WriteLine($"{"Date"},{"ParticiantID"},{"Condition"},{"Situation"},{"Time"},{"EyeTrackingPositions"},{"HitObject"},{"EyeTargetDistance"},{"ObserverTargetDistance"},{"ObserverObjectPosition"},{"OighlightedPlayerObject"}, {"HeadPosition"}, {"HeadRotation"}");
                 }
-                data.WriteLine($"{currentDate}, {ParticipantID}, {Condition}, {situation[3]}, {time}, {ConvertListVector3ToCSVString(new List<Vector3> { hit.point })}, {hit.collider.gameObject.name}, {EyeTargetDistance}, {ObserverTargetDistance}, {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { head.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { new Vector3(head.transform.rotation.x, head.transform.rotation.y, head.transform.rotation.z) })}");
+                data.WriteLine($"{currentDate}, {ParticipantID}, {Condition}, {situation[3]}, {time}, {ConvertListVector3ToCSVString(new List<Vector3> { hit.point })}, {hitObjectName}, {EyeTargetDistance}, {ObserverTargetDistance}, {ConvertListVector3ToCSVString(new List<Vector3> { observerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { highlightedPlayerObject.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { head.transform.position })}, {ConvertListVector3ToCSVString(new List<Vector3> { new Vector3(head.transform.rotation.x, head.transform.rotation.y, head.transform.rotation.z) })}");
             }
         }
     }
