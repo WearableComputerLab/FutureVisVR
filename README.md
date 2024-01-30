@@ -11,7 +11,7 @@ The Unity project for the paper 'Whatever could be, could be: Visualizing Future
 
 ## **Prerequisites**
 - Unity 2021.3.24f1 or later
-- [Google Research Football](https://github.com/google-research/football) (using [kaggle-environments](https://github.com/Kaggle/kaggle-environments/tree/master) to get data)
+- [Google Research Football](https://github.com/google-research/football) (using [kaggle-environments](https://github.com/Kaggle/kaggle-environments/tree/master) to generate data)
 - [Soccer Players & Stadiums Pack](https://assetstore.unity.com/packages/3d/characters/soccer-players-stadiums-pack-105891) (3D football environment)
 - Oculus XR Plugin (Unity Package Manager)
 - Newtonsoft Json (Unity Package Manager)
